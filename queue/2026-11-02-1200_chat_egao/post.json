@@ -1,0 +1,11 @@
+{
+  "type": "reel",
+  "template": "reel_chat",
+  "scenesFile": "chat.js",
+  "publishAt": "2026-11-02T12:00:00+09:00",
+  "approved": true,
+  "media": ["video.mp4"],
+  "thumbOffsetMs": 1000,
+  "captionFile": "caption.txt",
+  "source": "note下書き: 「笑顔で接客して」が、お客様の不安とすれ違うとき"
+}
