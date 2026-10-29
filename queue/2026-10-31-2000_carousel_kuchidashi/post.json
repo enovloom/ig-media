@@ -1,0 +1,8 @@
+{
+  "type": "carousel",
+  "publishAt": "2026-10-31T20:00:00+09:00",
+  "approved": true,
+  "media": ["01.jpg", "02.jpg", "03.jpg", "04.jpg", "05.jpg", "06.jpg", "07.jpg", "08.jpg"],
+  "captionFile": "caption.txt",
+  "source": "https://note.com/en_lab7504/n/nba6c214e3bc1"
+}
