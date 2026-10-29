@@ -1,0 +1,11 @@
+{
+  "type": "reel",
+  "template": "reel_chat",
+  "scenesFile": "chat.js",
+  "publishAt": "2026-10-31T07:30:00+09:00",
+  "approved": true,
+  "media": ["video.mp4"],
+  "thumbOffsetMs": 1000,
+  "captionFile": "caption.txt",
+  "source": "https://note.com/en_lab7504/n/ndc573b93beef"
+}
