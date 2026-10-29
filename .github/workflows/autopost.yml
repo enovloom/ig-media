@@ -2,7 +2,8 @@ name: autopost
 
 on:
   schedule:
-    - cron: '*/15 * * * *'
+    # GitHub often skips or delays scheduled runs; asking every 5 minutes keeps posts closer to their time
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 permissions:
