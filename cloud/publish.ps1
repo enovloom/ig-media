@@ -41,6 +41,7 @@ function Wait-Url([string]$url) {
 $me = IG GET "$($cfg.igUserId)?fields=username"
 Log "account @$($me.username)"
 if (-not (Test-Path $queue)) { New-Item -ItemType Directory $queue | Out-Null }
+$failed = $false
 
 foreach ($dir in Get-ChildItem $queue -Directory | Sort-Object Name) {
   $id = $dir.Name
@@ -55,7 +56,7 @@ foreach ($dir in Get-ChildItem $queue -Directory | Sort-Object Name) {
   }
   if ($at -gt $now) { continue }
   if (-not $e) { $e = @{ attempts = 0 }; $state[$id] = $e }
-  if ($now - $at -gt $late) { $e.status = 'missed'; $e.scheduledFor = $slot; Save-State; Log "$($id): missed (more than $($cfg.lateLimitHours)h late)"; continue }
+  if ($now - $at -gt $late) { $e.status = 'missed'; $e.scheduledFor = $slot; Save-State; Log "$($id): missed (more than $($cfg.lateLimitHours)h late)"; $failed = $true; continue }
 
   try {
     $e.attempts = [int]$e.attempts + 1
@@ -88,5 +89,8 @@ foreach ($dir in Get-ChildItem $queue -Directory | Sort-Object Name) {
     if ($e.status -ne 'publishing') { $e.error = $msg; if ($e.attempts -ge 3) { $e.status = 'failed' } }
     Save-State
     Log "$($id): error: $msg"
+    $failed = $true
   }
 }
+# a failed run makes GitHub email the account owner
+if ($failed) { exit 1 }
