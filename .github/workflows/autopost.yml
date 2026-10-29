@@ -24,6 +24,7 @@ jobs:
           IG_PAGE_TOKEN: ${{ secrets.IG_PAGE_TOKEN }}
         run: ./cloud/publish.ps1
       - name: Save results
+        if: always()
         run: |
           if [ -n "$(git status --porcelain queue/state.json)" ]; then
             git config user.name "enovloom"
