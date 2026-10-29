@@ -1,9 +1,0 @@
-{
-  "type": "reel",
-  "publishAt": "2026-10-30T12:00:00+09:00",
-  "approved": true,
-  "media": ["video.mp4"],
-  "thumbOffsetMs": 2500,
-  "captionFile": "caption.txt",
-  "source": "https://note.com/en_lab7504/n/ncc9766883ee2"
-}
