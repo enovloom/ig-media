@@ -46,14 +46,16 @@ foreach ($dir in Get-ChildItem $queue -Directory | Sort-Object Name) {
   $id = $dir.Name
   $p = Get-Content (Join-Path $dir.FullName 'post.json') -Raw | ConvertFrom-Json
   if (-not $p.approved) { continue }
+  # pwsh 7 turns ISO strings into DateTime while parsing JSON, so accept either form
+  $at = if ($p.publishAt -is [datetime]) { [DateTimeOffset]$p.publishAt } else { [DateTimeOffset]::Parse([string]$p.publishAt) }
+  $slot = $at.ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')
   $e = $state[$id]
   if ($e -and $e.status -in @('published', 'publishing', 'missed', 'failed')) {
-    if (-not ($e.status -eq 'missed' -and $e.scheduledFor -ne $p.publishAt)) { continue }
+    if (-not ($e.status -eq 'missed' -and $e.scheduledFor -ne $slot)) { continue }
   }
-  $at = [DateTimeOffset]::Parse($p.publishAt)
   if ($at -gt $now) { continue }
   if (-not $e) { $e = @{ attempts = 0 }; $state[$id] = $e }
-  if ($now - $at -gt $late) { $e.status = 'missed'; $e.scheduledFor = $p.publishAt; Save-State; Log "$($id): missed (more than $($cfg.lateLimitHours)h late)"; continue }
+  if ($now - $at -gt $late) { $e.status = 'missed'; $e.scheduledFor = $slot; Save-State; Log "$($id): missed (more than $($cfg.lateLimitHours)h late)"; continue }
 
   try {
     $e.attempts = [int]$e.attempts + 1
