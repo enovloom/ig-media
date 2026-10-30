@@ -10,25 +10,25 @@
     ]
   },
   "cast": {
-    "manager": "the Japanese man in the navy polo shirt (reference image)",
-    "saki": "the Japanese woman with a low ponytail in the charcoal gray zip-up jacket (reference image)",
-    "gym": "the small gym from the reference image, with a wooden floor, a glass sliding entrance door, a white reception podium with a small lamp, a power rack, dumbbells and a mirror wall"
+    "manager": "the young Japanese man in the navy polo shirt (reference image)",
+    "mio": "the young Japanese woman in the charcoal gray zip-up jacket (reference image)",
+    "gym": "the spacious gym from the reference image, with a glass storefront open to the street, green artificial turf, mirror walls and a white reception counter"
   },
   "clips": [
     {
       "file": "01.mp4",
       "dur": 6.2,
-      "prompt": "Vertical 9:16 cinematic shot. Night, inside [gym], warm lights. [saki] stands by the reception podium with her arms crossed, looking coldly at [manager], who holds a clipboard. He opens his mouth to answer, then stops and swallows his words. Slow push-in on his face, shallow depth of field. Realistic, natural skin, natural acting, Japanese TV drama look. No text, no subtitles, nobody speaks, quiet room tone only.",
+      "prompt": "Vertical 9:16 cinematic shot. Night, inside [gym], warm lights. [mio] stands by the reception counter with her arms crossed, looking coldly at [manager], who holds a clipboard. He opens his mouth to answer, then stops and swallows his words. Slow push-in on his face, shallow depth of field. Realistic, natural skin, natural acting, Japanese TV drama look. No text, no subtitles, nobody speaks, quiet room tone only.",
       "refs": [
         "店長",
-        "サキ",
+        "ミオ",
         "ジム"
       ]
     },
     {
       "file": "02.mp4",
       "dur": 5.6,
-      "prompt": "Vertical 9:16 cinematic shot. Night, inside [gym]. A Japanese woman in her 50s in casual clothes walks out through the glass sliding door with a tired, unsmiling face, not looking back. In the foreground, [manager] turns his head and watches her leave; the focus shifts from her back to his worried face. Realistic, natural skin, natural acting, Japanese TV drama look. No text, no subtitles, nobody speaks, door sound and room tone only.",
+      "prompt": "Vertical 9:16 cinematic shot. Night, inside [gym]. A Japanese woman in her 50s in casual clothes walks out through the glass entrance door with a tired, unsmiling face, not looking back. In the foreground, [manager] turns his head and watches her leave; the focus shifts from her back to his worried face. Realistic, natural skin, natural acting, Japanese TV drama look. No text, no subtitles, nobody speaks, door sound and room tone only.",
       "refs": [
         "店長",
         "ジム"
@@ -37,10 +37,10 @@
     {
       "file": "03.mp4",
       "dur": 6.4,
-      "prompt": "Vertical 9:16 cinematic medium two-shot. Night, inside [gym], by the reception podium. [manager] turns to [saki] and asks her a quiet question. She looks away, then answers back with a defensive, slightly annoyed expression. Realistic, natural skin, natural acting, Japanese TV drama look. No text, no subtitles, nobody speaks, room tone only.",
+      "prompt": "Vertical 9:16 cinematic medium two-shot. Night, inside [gym], by the reception counter. [manager] turns to [mio] and asks her a quiet question. She looks away, then answers back with a defensive, slightly annoyed expression. Realistic, natural skin, natural acting, Japanese TV drama look. No text, no subtitles, nobody speaks, room tone only.",
       "refs": [
         "店長",
-        "サキ",
+        "ミオ",
         "ジム"
       ]
     },
@@ -57,10 +57,10 @@
       "file": "05.mp4",
       "dur": 6.4,
       "fadeIn": 0.5,
-      "prompt": "Vertical 9:16 cinematic shot. Early morning, soft sunlight through the glass sliding door of [gym]. [manager] is alone, wiping the glass door with a cloth. [saki] arrives for work, stops behind him and watches in silence; her expression softens slightly. Realistic, natural skin, natural acting, Japanese TV drama look. No text, no subtitles, nobody speaks, quiet morning ambience only.",
+      "prompt": "Vertical 9:16 cinematic shot. Early morning, soft sunlight through the glass entrance door of [gym]. [manager] is alone, wiping the glass door with a cloth. [mio] arrives for work, stops behind him and watches in silence; her expression softens slightly. Realistic, natural skin, natural acting, Japanese TV drama look. No text, no subtitles, nobody speaks, quiet morning ambience only.",
       "refs": [
         "店長",
-        "サキ",
+        "ミオ",
         "ジム"
       ]
     }
@@ -69,7 +69,7 @@
     {
       "t": 0.4,
       "until": 3.4,
-      "who": "サキ",
+      "who": "ミオ",
       "text": "新しい店長？\nまた数字の話しかしないんでしょ"
     },
     {
@@ -93,7 +93,7 @@
     {
       "t": 15.4,
       "until": 18.1,
-      "who": "サキ",
+      "who": "ミオ",
       "text": "…それも指導ですか"
     },
     {

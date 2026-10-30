@@ -28,7 +28,7 @@
 
   .sub { position: absolute; left: 60px; right: 60px; top: 1300px; text-align: center; }
   .sub .who { display: inline-block; font-weight: 900; font-size: 30px; color: #fff; padding: 6px 22px; border-radius: 999px; margin-bottom: 18px; }
-  .sub .who.saki { background: #d6457d; }
+  .sub .who.other { background: #d6457d; }
   .sub .who.manager { background: #3d6fd6; }
   .sub .text { font-weight: 900; font-size: 58px; line-height: 1.45; color: #fff; white-space: pre-line;
     -webkit-text-stroke: 12px rgba(20,20,30,0.9); paint-order: stroke fill; text-shadow: 0 4px 14px rgba(0,0,0,0.5); }
@@ -58,7 +58,6 @@
   </div>
 <script>
   const $ = (id) => document.getElementById(id);
-  const WHO = { 'サキ': 'saki', '店長': 'manager' };
 
   // Shows one overlay layer: 'frame', 'hook', a subtitle ({ who, text }) or 'end'.
   function show(ep, layer) {
@@ -91,7 +90,7 @@
     } else {
       const who = $('sub').querySelector('.who'), text = $('sub').querySelector('.text');
       who.textContent = layer.who;
-      who.className = 'who ' + (WHO[layer.who] || 'manager');
+      who.className = 'who ' + (layer.who === '店長' ? 'manager' : 'other');
       text.textContent = layer.text;
       text.className = 'text' + (layer.text.startsWith('（') ? ' inner' : '');
       $('sub').style.display = 'block';
