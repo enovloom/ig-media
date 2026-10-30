@@ -1,11 +1,19 @@
 # Synthesizes the reel soundtrack: a quiet lo-fi beat and pad, plus a sound for every chat event.
+# For a drama episode (style "drama") it is only the pad and the end chime, played under the clips' own sound.
 #   python3 audio.py scene.json out.wav
 import json, sys, wave
 import numpy as np
 
 SR = 48000
 scene = json.load(open(sys.argv[1], encoding='utf-8'))
-dur = scene['duration']
+drama = scene.get('style') == 'drama'
+if drama:
+    clip_end = sum(c['dur'] for c in scene['clips'])
+    dur = clip_end + scene['endDur']
+    events = [{'t': clip_end, 'type': 'end'}]
+else:
+    dur = scene['duration']
+    events = scene['events']
 mix = np.zeros(int(SR * dur) + SR)
 
 def add(sig, t, gain=1.0):
@@ -45,7 +53,7 @@ kick = tone(130, 45, 0.35, 0.12)
 snare = noise(0.2, 0.05, smooth=3)
 hat = noise(0.05, 0.012)
 b = 0
-while b * beat < dur:
+while not drama and b * beat < dur:
     t = b * beat
     add(kick if b % 2 == 0 else snare, t, 0.30 if b % 2 == 0 else 0.07)
     add(hat, t + beat / 2, 0.025)
@@ -61,12 +69,12 @@ while c * 2 * bar < dur:
     t = np.arange(n) / SR
     shape = np.minimum(1, t / 0.6) * np.minimum(1, (length - t) / 0.6)
     pad = sum(np.sin(2 * np.pi * 440 * 2 ** ((m - 69) / 12) * t) for m in chords[c % 4]) * shape
-    add(pad, c * 2 * bar, 0.022)
+    add(pad, c * 2 * bar, 0.05 if drama else 0.022)
     c += 1
 
 pop_l = tone(620, 480, 0.09, 0.03)
 pop_r = tone(880, 1180, 0.09, 0.03)
-for ev in scene['events']:
+for ev in events:
     t, k = ev['t'], ev['type']
     if k == 'left':
         add(pop_l, t, 0.30)

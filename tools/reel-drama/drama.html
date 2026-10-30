@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: 'NSJ'; font-weight: 500; src: url('fonts/NotoSansJP-500.ttf'); }
+  @font-face { font-family: 'NSJ'; font-weight: 700; src: url('fonts/NotoSansJP-700.ttf'); }
+  @font-face { font-family: 'NSJ'; font-weight: 900; src: url('fonts/NotoSansJP-900.ttf'); }
+  :root { --ink: #1f2a37; --yellow: #fbe55f; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: transparent; }
+  body { font-family: 'NSJ', 'Noto Color Emoji', sans-serif; position: relative; }
+  body.end {
+    background:
+      radial-gradient(circle at 12% 22%, rgba(255,255,255,0.09), transparent 38%),
+      radial-gradient(circle at 88% 78%, rgba(255,255,255,0.07), transparent 42%),
+      linear-gradient(180deg, #2c2b69 0%, #4a2f73 40%, #8a3778 75%, #b63c78 100%);
+  }
+  .part { display: none; }
+  .shade-top { position: absolute; left: 0; right: 0; top: 0; height: 560px; background: linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0)); }
+  .shade-bottom { position: absolute; left: 0; right: 0; bottom: 0; height: 820px; background: linear-gradient(0deg, rgba(0,0,0,0.6), rgba(0,0,0,0)); }
+  .label { position: absolute; left: 64px; top: 230px; font-weight: 700; font-size: 30px; color: rgba(255,255,255,0.88); text-shadow: 0 2px 8px rgba(0,0,0,0.5); }
+  .label .sep { display: inline-block; margin: 0 10px; color: rgba(255,255,255,0.5); font-weight: 500; }
+
+  .hook { position: absolute; left: 56px; top: 292px; }
+  .hook .l1 { font-weight: 900; font-size: 76px; line-height: 1.12; color: #fff; padding-left: 8px; text-shadow: 0 3px 14px rgba(0,0,0,0.55); white-space: nowrap; }
+  .hook .l2 { display: inline-block; margin-top: 6px; font-weight: 900; font-size: 76px; line-height: 1.08; color: var(--ink); background: var(--yellow); border-radius: 12px; padding: 0 12px; white-space: nowrap; }
+
+  .sub { position: absolute; left: 60px; right: 60px; top: 1300px; text-align: center; }
+  .sub .who { display: inline-block; font-weight: 900; font-size: 30px; color: #fff; padding: 6px 22px; border-radius: 999px; margin-bottom: 18px; }
+  .sub .who.saki { background: #d6457d; }
+  .sub .who.manager { background: #3d6fd6; }
+  .sub .text { font-weight: 900; font-size: 58px; line-height: 1.45; color: #fff; white-space: pre-line;
+    -webkit-text-stroke: 12px rgba(20,20,30,0.9); paint-order: stroke fill; text-shadow: 0 4px 14px rgba(0,0,0,0.5); }
+  .sub .text.inner { color: #dfe6ff; font-weight: 700; }
+  .card { position: absolute; left: 0; right: 0; top: 880px; text-align: center; }
+  .card span { display: inline-block; font-weight: 900; font-size: 64px; color: #fff; letter-spacing: 12px; padding: 18px 60px 18px 72px; background: rgba(10,10,20,0.55); border-radius: 16px; }
+
+  .endcard { position: absolute; left: 80px; right: 60px; top: 600px; }
+  .endcard .e1 { font-weight: 900; font-size: 78px; line-height: 1.15; color: #fff; white-space: nowrap; }
+  .endcard .e2 { display: inline-block; margin-top: 8px; font-weight: 900; font-size: 78px; line-height: 1.1; color: var(--ink); background: var(--yellow); border-radius: 12px; padding: 0 12px; margin-left: -12px; white-space: nowrap; }
+  .endcard .q { margin-top: 150px; font-weight: 700; font-size: 44px; line-height: 1.6; color: #fff; white-space: pre-line; }
+  .endcard .cta { display: inline-block; margin-top: 70px; background: var(--yellow); color: var(--ink); font-weight: 900; font-size: 42px; padding: 34px 56px; border-radius: 999px; }
+  .endcard .n1 { margin-top: 44px; font-weight: 700; font-size: 34px; color: rgba(255,255,255,0.8); }
+  .endcard .n2 { margin-top: 14px; font-weight: 500; font-size: 26px; color: rgba(255,255,255,0.65); }
+</style>
+</head>
+<body>
+  <div class="part frame"><div class="shade-top"></div><div class="shade-bottom"></div><div class="label" id="label"></div></div>
+  <div class="part hook" id="hook"><div class="l1"></div><div class="l2"></div></div>
+  <div class="part sub" id="sub"><div class="who"></div><div><span class="text"></span></div></div>
+  <div class="part card" id="card"><span></span></div>
+  <div class="part endcard" id="end">
+    <div class="e1"></div><div class="e2"></div>
+    <div class="q"></div>
+    <div class="cta"></div>
+    <div class="n1"></div><div class="n2"></div>
+  </div>
+<script>
+  const $ = (id) => document.getElementById(id);
+  const WHO = { 'サキ': 'saki', '店長': 'manager' };
+
+  // Shows one overlay layer: 'frame', 'hook', a subtitle ({ who, text }) or 'end'.
+  function show(ep, layer) {
+    document.body.className = layer === 'end' ? 'end' : '';
+    for (const p of document.querySelectorAll('.part')) p.style.display = 'none';
+    for (const s of document.querySelectorAll('.shade-top, .shade-bottom')) s.style.display = '';
+    $('label').innerHTML = 'enovloom<span class="sep">|</span>' + ep.label;
+    if (layer === 'frame') {
+      document.querySelector('.frame').style.display = 'block';
+    } else if (layer === 'hook') {
+      $('hook').querySelector('.l1').textContent = ep.hook.lines[0];
+      $('hook').querySelector('.l2').textContent = ep.hook.lines[1];
+      $('hook').style.display = 'block';
+    } else if (layer === 'end') {
+      const e = $('end'), E = ep.end;
+      e.querySelector('.e1').textContent = E.title[0];
+      e.querySelector('.e2').textContent = E.title[1];
+      e.querySelector('.q').textContent = E.question;
+      e.querySelector('.cta').textContent = E.cta;
+      e.querySelector('.n1').textContent = E.note1;
+      e.querySelector('.n2').textContent = E.note2;
+      document.querySelector('.frame').style.display = 'block';
+      document.querySelector('.shade-top').style.display = 'none';
+      document.querySelector('.shade-bottom').style.display = 'none';
+      e.style.display = 'block';
+    } else if (!layer.who) {
+      // a line with no speaker is a time card such as 翌朝
+      $('card').querySelector('span').textContent = layer.text;
+      $('card').style.display = 'block';
+    } else {
+      const who = $('sub').querySelector('.who'), text = $('sub').querySelector('.text');
+      who.textContent = layer.who;
+      who.className = 'who ' + (WHO[layer.who] || 'manager');
+      text.textContent = layer.text;
+      text.className = 'text' + (layer.text.startsWith('（') ? ' inner' : '');
+      $('sub').style.display = 'block';
+    }
+  }
+</script>
+</body>
+</html>

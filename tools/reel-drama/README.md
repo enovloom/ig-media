@@ -11,4 +11,15 @@ node render.js episodes/<id>.json --stills 1,10,30   # check the layout
 node render.js episodes/<id>.json audio.wav video.mp4
 ```
 
+## Drama episodes
+
+A drama episode (`"style": "drama"`, e.g. `episodes/drama-ep1.json`) is cut from generated video clips
+(Google Flow / Veo, 9:16, about 8 seconds each). The JSON holds the fixed cast, one prompt per clip,
+the subtitles and the end card; the finished reel gets the same label, hook title and end card as the chat reels.
+
+```sh
+node drama.js episodes/drama-ep1.json --prompts               # prompts to paste into Flow, cast filled in
+node drama.js episodes/drama-ep1.json <clips dir> video.mp4   # clips named 01.mp4, 02.mp4, ... as in the JSON
+```
+
 Needs Node with Playwright (Chromium), ffmpeg, and Python 3 with numpy.
