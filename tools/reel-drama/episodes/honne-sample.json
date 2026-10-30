@@ -1,0 +1,125 @@
+{
+  "style": "drama",
+  "bgm": "comedy",
+  "fps": 30,
+  "label": "建前と本音 #1",
+  "hook": {
+    "until": 3.0,
+    "lines": [
+      "店長の「何か困ってる？」",
+      "スタッフの頭の中"
+    ]
+  },
+  "clips": [
+    {
+      "file": "gym_wide.jpg",
+      "dur": 3.2,
+      "move": "in",
+      "fit": "blur"
+    },
+    {
+      "file": "mio.jpg",
+      "dur": 4.2,
+      "move": "in",
+      "focusY": 0.25
+    },
+    {
+      "file": "manager.jpg",
+      "dur": 3.8,
+      "move": "out",
+      "focusY": 0.2
+    },
+    {
+      "file": "twoshot.jpg",
+      "dur": 3.6,
+      "move": "left"
+    },
+    {
+      "file": "mio_close.jpg",
+      "dur": 3.6,
+      "move": "in"
+    },
+    {
+      "file": "gym.jpg",
+      "dur": 3.6,
+      "move": "up"
+    }
+  ],
+  "subs": [
+    {
+      "t": 0.5,
+      "until": 3.2,
+      "who": "店長",
+      "pos": "upper",
+      "text": "何か困ってること、ある？",
+      "sfx": "pop"
+    },
+    {
+      "t": 3.3,
+      "until": 7.4,
+      "who": "ミオ",
+      "tag": "建前",
+      "pos": "upper",
+      "text": "大丈夫です！",
+      "sfx": "pop"
+    },
+    {
+      "t": 4.6,
+      "until": 7.4,
+      "who": "ミオ",
+      "tag": "本音",
+      "text": "困ってるのは、\nその質問です",
+      "sfx": "gaan"
+    },
+    {
+      "t": 7.5,
+      "until": 11.2,
+      "who": "店長",
+      "pos": "upper",
+      "text": "みんなの意見を\n聞きたいんだよね",
+      "sfx": "pop"
+    },
+    {
+      "t": 11.3,
+      "until": 14.8,
+      "who": "ミオ",
+      "tag": "本音",
+      "text": "（どうせもう\n決まってるやつ）",
+      "sfx": "tsukkomi"
+    },
+    {
+      "t": 14.9,
+      "until": 18.4,
+      "who": "店長",
+      "pos": "upper",
+      "text": "前の店長のやり方は\n一回忘れようか",
+      "sfx": "pop"
+    },
+    {
+      "t": 16.2,
+      "until": 18.4,
+      "who": "ミオ",
+      "tag": "本音",
+      "text": "前の店長、\n神だったんですけど",
+      "sfx": "don"
+    },
+    {
+      "t": 18.6,
+      "until": 22.0,
+      "text": "…じゃあ、どう聞けば\n本音が出るの？",
+      "sfx": "whoosh"
+    }
+  ],
+  "endDur": 4.6,
+  "end": {
+    "title": [
+      "スタッフが本音を言える",
+      "聞き方3つ"
+    ],
+    "question": "あなたの店の「建前」、\nどれが一番多い？コメントで👇",
+    "cta": "聞き方はプロフィールのnoteで →",
+    "note1": "保存して、次の面談の前に見返す",
+    "note2": "※よくある場面をもとにした創作です"
+  },
+  "note": "format sample built from the cast reference images and episode 1 stills; real posts use photos of the shop"
+}

@@ -1,5 +1,6 @@
 # Synthesizes the reel soundtrack: a quiet lo-fi beat and pad, plus a sound for every chat event.
-# For a drama episode (style "drama") it is only the pad and the end chime, played under the clips' own sound.
+# For a drama episode (style "drama") it is the music bed named by "bgm" (pad, comedy or none), the end chime,
+# and the sound effect each subtitle names with "sfx" (see SFX below), played under the clips' own sound.
 #   python3 audio.py scene.json out.wav
 import json, sys, wave
 import numpy as np
@@ -10,7 +11,7 @@ drama = scene.get('style') == 'drama'
 if drama:
     clip_end = sum(c['dur'] for c in scene['clips'])
     dur = clip_end + scene['endDur']
-    events = [{'t': clip_end, 'type': 'end'}]
+    events = [{'t': clip_end, 'type': 'end'}] + [{'t': x['t'], 'type': 'sfx', 'name': x['sfx']} for x in scene['subs'] if x.get('sfx')]
 else:
     dur = scene['duration']
     events = scene['events']
@@ -52,18 +53,33 @@ beat = 60 / 92
 kick = tone(130, 45, 0.35, 0.12)
 snare = noise(0.2, 0.05, smooth=3)
 hat = noise(0.05, 0.012)
+bgm = scene.get('bgm', 'pad') if drama else 'chat'
 b = 0
-while not drama and b * beat < dur:
+while bgm == 'chat' and b * beat < dur:
     t = b * beat
     add(kick if b % 2 == 0 else snare, t, 0.30 if b % 2 == 0 else 0.07)
     add(hat, t + beat / 2, 0.025)
     b += 1
 
+# comedy: 116 BPM, short plucked chords C - Am - F - G on the off-beats over a light kick and hats
+if bgm == 'comedy':
+    cb = 60 / 116
+    prog = [[60, 64, 67], [57, 60, 64], [53, 57, 60], [55, 59, 62]]
+    k = 0
+    while k * cb < dur:
+        t = k * cb
+        add(kick, t, 0.22 if k % 2 == 0 else 0.0)
+        add(hat, t + cb / 2, 0.02)
+        for m in prog[(k // 4) % 4]:
+            add(note(m + 12, 0.25, 0.06), t + cb / 2, 0.05)
+        add(note(prog[(k // 4) % 4][0] - 12, 0.4, 0.12), t, 0.10)
+        k += 1
+
 # pad: Am - F - C - G, two bars each, slow attack
 chords = [[57, 60, 64], [53, 57, 60], [48, 55, 60], [55, 59, 62]]
 bar = beat * 4
 c = 0
-while c * 2 * bar < dur:
+while bgm in ('chat', 'pad') and c * 2 * bar < dur:
     length = 2 * bar
     n = int(length * SR)
     t = np.arange(n) / SR
@@ -74,6 +90,41 @@ while c * 2 * bar < dur:
 
 pop_l = tone(620, 480, 0.09, 0.03)
 pop_r = tone(880, 1180, 0.09, 0.03)
+
+def layer(*sigs):
+    # sums sounds of different lengths
+    out = np.zeros(max(len(x) for x in sigs))
+    for x in sigs:
+        out[:len(x)] += x
+    return out
+
+def chord(midis, length, decay, spread=0.0):
+    out = np.zeros(int((length + spread * len(midis)) * SR))
+    for i, m in enumerate(midis):
+        w = note(m, length, decay)
+        j = int(i * spread * SR)
+        out[j:j + len(w)] += w
+    return out
+
+def sweep(length):
+    # a whoosh: noise that swells and fades, brighter in the middle
+    n = int(length * SR)
+    t = np.linspace(0, 1, n)
+    w = np.random.default_rng(3).standard_normal(n)
+    w = np.convolve(w, np.ones(6) / 6, mode='same') * 0.6 + w * 0.4 * np.sin(np.pi * t)
+    return w * np.sin(np.pi * t) ** 2
+
+# sound effects a subtitle can name with "sfx", each with its gain in the mix
+SFX = {
+    'pop': (pop_r, 0.26),                                                    # a line appears
+    'tsukkomi': (layer(noise(0.08, 0.02), 0.8 * tone(220, 110, 0.12, 0.04)), 0.5), # paper-fan slap for a sharp 本音
+    'don': (layer(tone(95, 35, 0.7, 0.25), 0.5 * noise(0.3, 0.06, smooth=8)), 0.6), # heavy impact
+    'gaan': (layer(chord([48, 51, 54, 57], 1.4, 0.6), chord([36, 39, 42], 1.4, 0.6)), 0.16), # shock chord
+    'kira': (chord([96, 100, 103, 108], 0.5, 0.15, spread=0.05), 0.08),      # sparkle
+    'whoosh': (sweep(0.45), 0.18),                                           # scene change
+    'ding': (np.concatenate([note(88, 0.18, 0.12), note(84, 0.5, 0.25)]), 0.14), # correct
+    'buzz': (sum(np.sin(2 * np.pi * 140 * h * np.arange(int(0.5 * SR)) / SR) / h for h in (1, 3, 5)) * env(int(0.5 * SR), decay=0.4), 0.12), # wrong
+}
 for ev in events:
     t, k = ev['t'], ev['type']
     if k == 'left':
@@ -89,6 +140,9 @@ for ev in events:
         add(tone(160, 50, 0.4, 0.14), t, 0.45)
         for i, m in enumerate([84, 88, 91]):
             add(note(m, 0.8, 0.3), t + 0.02 + i * 0.03, 0.09)
+    elif k == 'sfx':
+        sig, gain = SFX[ev['name']]
+        add(sig, t, gain)
     elif k == 'end':
         for i, m in enumerate([72, 76, 79, 84]):
             add(note(m, 0.9, 0.35), t + i * 0.09, 0.13)
