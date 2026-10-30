@@ -9,9 +9,9 @@ const path = require('path');
 
 const [epFile, a2, a3] = process.argv.slice(2);
 const ep = JSON.parse(fs.readFileSync(epFile, 'utf8'));
-const fill = (p) => p.replace(/\[(\w+)\]/g, (_, k) => ep.cast[k]);
+const fill = (p) => p.replace(/\[(\w+)\]/g, (_, k) => ep.cast[k]).replace(/(^|[.!?] )([a-z])/g, (_, a, b) => a + b.toUpperCase());
 if (a2 === '--prompts') {
-  for (const c of ep.clips) console.log(`--- ${c.file}\n${fill(c.prompt)}\n`);
+  for (const c of ep.clips) console.log(`--- ${c.file}` + (c.refs ? `  (reference images: ${c.refs.join(', ')})` : '') + `\n${fill(c.prompt)}\n`);
   process.exit(0);
 }
 

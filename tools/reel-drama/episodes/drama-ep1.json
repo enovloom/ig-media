@@ -2,47 +2,125 @@
   "style": "drama",
   "fps": 30,
   "label": "新店長ドラマ 第1話",
-  "hook": { "until": 3.2, "lines": ["着任初日、", "ベテランに言われた一言"] },
+  "hook": {
+    "until": 3.2,
+    "lines": [
+      "着任初日、",
+      "ベテランに言われた一言"
+    ]
+  },
   "cast": {
-    "manager": "a Japanese man in his early 30s, short black hair, plain navy polo shirt with no logo, black training pants, calm but tired eyes",
-    "saki": "a Japanese woman in her early 40s, a veteran personal trainer, dark brown hair in a low ponytail, plain charcoal gray training jacket with no logo",
-    "gym": "a small independent personal training gym in Japan at night, warm lighting, light wooden floor, a dumbbell rack, a small white reception counter, a glass entrance door"
+    "manager": "the Japanese man in the navy polo shirt (reference image)",
+    "saki": "the Japanese woman with a low ponytail in the charcoal gray zip-up jacket (reference image)",
+    "gym": "the small gym from the reference image, with a wooden floor, a glass sliding entrance door, a white reception podium with a small lamp, a power rack, dumbbells and a mirror wall"
   },
   "clips": [
     {
-      "file": "01.mp4", "dur": 6.2,
-      "prompt": "Vertical 9:16 cinematic shot. Inside [gym]. Night. [saki] stands at the reception counter with her arms crossed, looking coldly at [manager], who holds a clipboard. He opens his mouth to answer, then stops and swallows his words. Slow push-in on his face. Realistic, natural skin, shallow depth of field, Japanese TV drama look. No text, no subtitles, no speech, quiet room tone only."
+      "file": "01.mp4",
+      "dur": 6.2,
+      "prompt": "Vertical 9:16 cinematic shot. Night, inside [gym], warm lights. [saki] stands by the reception podium with her arms crossed, looking coldly at [manager], who holds a clipboard. He opens his mouth to answer, then stops and swallows his words. Slow push-in on his face, shallow depth of field. Realistic, natural skin, natural acting, Japanese TV drama look. No text, no subtitles, nobody speaks, quiet room tone only.",
+      "refs": [
+        "店長",
+        "サキ",
+        "ジム"
+      ]
     },
     {
-      "file": "02.mp4", "dur": 5.6,
-      "prompt": "Vertical 9:16 cinematic shot. Inside [gym]. Night. A Japanese woman in her 50s in casual clothes walks out through the glass entrance door with a tired, unsmiling face, not looking back. In the foreground, [manager] turns his head and watches her leave, out of focus at first, then the focus shifts to his worried face. Realistic, Japanese TV drama look. No text, no subtitles, no speech, door sound and room tone only."
+      "file": "02.mp4",
+      "dur": 5.6,
+      "prompt": "Vertical 9:16 cinematic shot. Night, inside [gym]. A Japanese woman in her 50s in casual clothes walks out through the glass sliding door with a tired, unsmiling face, not looking back. In the foreground, [manager] turns his head and watches her leave; the focus shifts from her back to his worried face. Realistic, natural skin, natural acting, Japanese TV drama look. No text, no subtitles, nobody speaks, door sound and room tone only.",
+      "refs": [
+        "店長",
+        "ジム"
+      ]
     },
     {
-      "file": "03.mp4", "dur": 6.4,
-      "prompt": "Vertical 9:16 cinematic shot. Inside [gym]. Night. Medium two-shot at the reception counter. [manager] turns to [saki] and asks her a quiet question. She looks away, then answers back with a defensive, slightly annoyed expression. Realistic, natural acting, Japanese TV drama look. No text, no subtitles, no speech, room tone only."
+      "file": "03.mp4",
+      "dur": 6.4,
+      "prompt": "Vertical 9:16 cinematic medium two-shot. Night, inside [gym], by the reception podium. [manager] turns to [saki] and asks her a quiet question. She looks away, then answers back with a defensive, slightly annoyed expression. Realistic, natural skin, natural acting, Japanese TV drama look. No text, no subtitles, nobody speaks, room tone only.",
+      "refs": [
+        "店長",
+        "サキ",
+        "ジム"
+      ]
     },
     {
-      "file": "04.mp4", "dur": 6.0,
-      "prompt": "Vertical 9:16 cinematic close-up. Inside [gym]. Night. [manager] speaks gently and sincerely, with a small, honest smile, looking at someone just off camera. Warm light from the side. Slow push-in. Realistic, Japanese TV drama look. No text, no subtitles, no speech, room tone only."
+      "file": "04.mp4",
+      "dur": 6.0,
+      "prompt": "Vertical 9:16 cinematic close-up. Night, inside [gym]. [manager] speaks gently and sincerely to someone just off camera, with a small, honest smile. Warm light from the side. Slow push-in. Realistic, natural skin, natural acting, Japanese TV drama look. No text, no subtitles, nobody speaks, room tone only.",
+      "refs": [
+        "店長",
+        "ジム"
+      ]
     },
     {
-      "file": "05.mp4", "dur": 6.4, "fadeIn": 0.5,
-      "prompt": "Vertical 9:16 cinematic shot. Early morning, soft sunlight through the glass entrance door of [gym]. [manager] is alone, wiping the glass door with a cloth. [saki] arrives for work, stops in the doorway behind him and watches in silence; her expression softens slightly. Realistic, Japanese TV drama look. No text, no subtitles, no speech, quiet morning ambience only."
+      "file": "05.mp4",
+      "dur": 6.4,
+      "fadeIn": 0.5,
+      "prompt": "Vertical 9:16 cinematic shot. Early morning, soft sunlight through the glass sliding door of [gym]. [manager] is alone, wiping the glass door with a cloth. [saki] arrives for work, stops behind him and watches in silence; her expression softens slightly. Realistic, natural skin, natural acting, Japanese TV drama look. No text, no subtitles, nobody speaks, quiet morning ambience only.",
+      "refs": [
+        "店長",
+        "サキ",
+        "ジム"
+      ]
     }
   ],
   "subs": [
-    { "t": 0.4,  "until": 3.4,  "who": "サキ", "text": "新しい店長？\nまた数字の話しかしないんでしょ" },
-    { "t": 3.5,  "until": 6.1,  "who": "店長", "text": "（…言い返したい。けど）" },
-    { "t": 7.0,  "until": 11.7, "who": "店長", "text": "（…今の人、笑ってなかった）" },
-    { "t": 12.0, "until": 15.2, "who": "店長", "text": "最後のお客様、\n帰るとき、どんな顔してました？" },
-    { "t": 15.4, "until": 18.1, "who": "サキ", "text": "…それも指導ですか" },
-    { "t": 18.3, "until": 21.0, "who": "店長", "text": "正解を押しつけたいんじゃない" },
-    { "t": 21.1, "until": 24.1, "who": "店長", "text": "笑顔で帰ってもらう方法を、\n一緒に考えたいんです" },
-    { "t": 24.5, "until": 27.0, "who": "",     "text": "翌朝" }
+    {
+      "t": 0.4,
+      "until": 3.4,
+      "who": "サキ",
+      "text": "新しい店長？\nまた数字の話しかしないんでしょ"
+    },
+    {
+      "t": 3.5,
+      "until": 6.1,
+      "who": "店長",
+      "text": "（…言い返したい。けど）"
+    },
+    {
+      "t": 7.0,
+      "until": 11.7,
+      "who": "店長",
+      "text": "（…今の人、笑ってなかった）"
+    },
+    {
+      "t": 12.0,
+      "until": 15.2,
+      "who": "店長",
+      "text": "最後のお客様、\n帰るとき、どんな顔してました？"
+    },
+    {
+      "t": 15.4,
+      "until": 18.1,
+      "who": "サキ",
+      "text": "…それも指導ですか"
+    },
+    {
+      "t": 18.3,
+      "until": 21.0,
+      "who": "店長",
+      "text": "正解を押しつけたいんじゃない"
+    },
+    {
+      "t": 21.1,
+      "until": 24.1,
+      "who": "店長",
+      "text": "笑顔で帰ってもらう方法を、\n一緒に考えたいんです"
+    },
+    {
+      "t": 24.5,
+      "until": 27.0,
+      "who": "",
+      "text": "翌朝"
+    }
   ],
   "endDur": 4.6,
   "end": {
-    "title": ["反発された新店長が、", "最初の1ヶ月にしたこと"],
+    "title": [
+      "反発された新店長が、",
+      "最初の1ヶ月にしたこと"
+    ],
     "question": "あなたなら、反発するベテランに\n最初に何を話す？コメントで👇",
     "cta": "続きはプロフィールのリンクから →",
     "note1": "保存して、着任する前に見返す",
