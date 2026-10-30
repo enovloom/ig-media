@@ -2,7 +2,7 @@
 //   node drama.js episodes/<id>.json --prompts            -> the clip prompts with the cast filled in
 //   node drama.js episodes/<id>.json <clips dir> <out.mp4> -> the finished 1080x1920 reel
 const { chromium } = require('playwright');
-const { execFileSync } = require('child_process');
+const { execFileSync, spawnSync } = require('child_process');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
@@ -14,6 +14,16 @@ if (a2 === '--prompts') {
   for (const c of ep.clips.filter((x) => x.prompt)) console.log(`--- ${c.file}` + (c.refs ? `  (reference images: ${c.refs.join(', ')})` : '') + `\n${fill(c.prompt)}\n`);
   process.exit(0);
 }
+
+// Veo sometimes letterboxes a 9:16 clip with pure black bars; this finds the picture inside them.
+// A clip can set "crop" ("w:h:x:y") by hand when the scene itself is very dark at the edges.
+const pictureArea = (file, c) => {
+  if (c.crop) return c.crop;
+  const log = spawnSync('ffmpeg', ['-v', 'info', '-ss', String(c.start || 0), '-t', String(c.dur), '-i', file,
+    '-vf', 'cropdetect=limit=24:round=2:reset=0', '-f', 'null', '-']).stderr.toString();
+  const m = [...log.matchAll(/crop=(\d+:\d+:\d+:\d+)/g)].pop();
+  return m ? m[1] : null;
+};
 
 (async () => {
   const [clipsDir, out] = [a2, a3];
@@ -49,7 +59,11 @@ if (a2 === '--prompts') {
     const hasAudio = execFileSync('ffprobe', ['-v', 'error', '-select_streams', 'a', '-show_entries', 'stream=index', '-of', 'csv=p=0', file]).toString().trim() !== '';
     const last = i === n - 1;
     const start = c.start || 0;
-    f.push(`[${i}:v]trim=start=${start}:duration=${c.dur},setpts=PTS-STARTPTS,fps=${ep.fps},scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,setsar=1,format=yuv420p` +
+    const area = pictureArea(file, c);
+    // focusX/focusY pick which part survives when the picture is cropped to fill the frame (0 = left/top, 1 = right/bottom)
+    const fx = c.focusX ?? 0.5, fy = c.focusY ?? 0.5;
+    f.push(`[${i}:v]trim=start=${start}:duration=${c.dur},setpts=PTS-STARTPTS,fps=${ep.fps},` + (area ? `crop=${area},` : '') +
+      `scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920:(iw-1080)*${fx}:(ih-1920)*${fy},setsar=1,format=yuv420p` +
       (c.fadeIn ? `,fade=t=in:st=0:d=${c.fadeIn}` : '') + (last ? `,tpad=stop_mode=clone:stop_duration=${ep.endDur}` : '') + `[v${i}]`);
     // mute drops the clip's own sound, e.g. when the model added voices the prompt asked it not to
     const src = hasAudio && !c.mute ? `[${i}:a]atrim=start=${start}:duration=${c.dur},asetpts=PTS-STARTPTS,aresample=48000` : `anullsrc=r=48000:cl=stereo,atrim=duration=${c.dur}`;
