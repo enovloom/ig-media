@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: 'NSJ'; font-weight: 500; src: url('fonts/NotoSansJP-500.ttf'); }
+  @font-face { font-family: 'NSJ'; font-weight: 700; src: url('fonts/NotoSansJP-700.ttf'); }
+  @font-face { font-family: 'NSJ'; font-weight: 900; src: url('fonts/NotoSansJP-900.ttf'); }
+  :root { --ink: #1f2a37; --yellow: #fbe55f; --peach: #f7ad8b; --chatbg: #dce6ee; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; }
+  body {
+    font-family: 'NSJ', 'Noto Color Emoji', sans-serif;
+    background:
+      radial-gradient(circle at 12% 22%, rgba(255,255,255,0.09), transparent 38%),
+      radial-gradient(circle at 88% 78%, rgba(255,255,255,0.07), transparent 42%),
+      linear-gradient(180deg, #2c2b69 0%, #4a2f73 40%, #8a3778 75%, #b63c78 100%);
+    position: relative;
+  }
+  .label { position: absolute; left: 64px; top: 230px; font-weight: 700; font-size: 30px; color: rgba(255,255,255,0.82); letter-spacing: 0.5px; }
+  .label .sep { display: inline-block; margin: 0 10px; color: rgba(255,255,255,0.45); font-weight: 500; }
+  .title { position: absolute; left: 56px; top: 292px; }
+  .title .l1 { font-weight: 900; font-size: 72px; line-height: 1.12; color: #fff; padding-left: 8px; text-shadow: 0 3px 12px rgba(0,0,0,0.25); white-space: nowrap; }
+  .title .l2 { display: inline-block; margin-top: 6px; font-weight: 900; font-size: 72px; line-height: 1.08; color: var(--ink); background: var(--yellow); border-radius: 12px; padding: 0 12px; white-space: nowrap; }
+
+  .card { position: absolute; left: 50px; top: 560px; width: 980px; height: 1052px; border-radius: 44px; overflow: hidden; background: var(--chatbg); box-shadow: 0 24px 60px rgba(0,0,0,0.28); }
+  .card .head { position: absolute; left: 0; right: 0; top: 0; height: 120px; background: #fff; display: flex; align-items: center; padding: 0 44px 0 40px; }
+  .card .head .back { font-weight: 700; font-size: 40px; color: var(--ink); margin-right: 30px; }
+  .card .head .name { font-weight: 900; font-size: 40px; color: var(--ink); flex: 1; }
+  .card .head svg { width: 44px; height: 44px; }
+  .card .body { position: absolute; left: 0; right: 0; top: 120px; bottom: 0; overflow: hidden; }
+  .stack { position: absolute; left: 0; right: 0; bottom: 34px; padding: 0 30px; }
+  .msg { overflow: hidden; }
+  .msg .in { padding-top: 26px; display: flex; transform-origin: 50% 100%; }
+  .msg.left .in { justify-content: flex-start; align-items: flex-start; }
+  .msg.right .in { justify-content: flex-end; align-items: flex-end; }
+  .msg.pill .in, .msg.date .in { justify-content: center; }
+  .avatar { flex: none; width: 82px; height: 82px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 46px; margin-right: 14px; }
+  .bubble { font-weight: 700; font-size: 44px; line-height: 1.55; color: var(--ink); padding: 24px 34px; border-radius: 36px; max-width: 800px; white-space: pre-line; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .left .bubble { background: #fff; }
+  .right .bubble { background: var(--peach); }
+  .read { font-weight: 700; font-size: 24px; color: #7b8794; margin: 0 12px 6px 0; }
+  .pillbox { font-weight: 700; font-size: 34px; color: #4b5563; background: rgba(120,135,150,0.25); border-radius: 999px; padding: 10px 30px; }
+  .date .pillbox { color: #fff; background: rgba(90,105,125,0.55); font-size: 30px; padding: 8px 28px; }
+
+  .stamp { position: absolute; left: 24px; width: 1032px; top: 1010px; height: 190px; border-radius: 18px; display: flex; align-items: center; justify-content: center; gap: 22px; color: #fff; font-weight: 900; font-size: 66px; box-shadow: 0 14px 36px rgba(0,0,0,0.3); opacity: 0; white-space: nowrap; }
+  .stamp.green { background: #2fae63; }
+  .stamp.red { background: #d63a4f; }
+  .stamp .icon { font-size: 60px; }
+
+  .endcard { position: absolute; left: 80px; right: 60px; top: 600px; opacity: 0; }
+  .endcard .e1 { font-weight: 900; font-size: 78px; line-height: 1.15; color: #fff; white-space: nowrap; }
+  .endcard .e2 { display: inline-block; margin-top: 8px; font-weight: 900; font-size: 78px; line-height: 1.1; color: var(--ink); background: var(--yellow); border-radius: 12px; padding: 0 12px; margin-left: -12px; white-space: nowrap; }
+  .endcard .q { margin-top: 150px; font-weight: 700; font-size: 44px; line-height: 1.6; color: #fff; white-space: pre-line; }
+  .endcard .cta { display: inline-block; margin-top: 70px; background: var(--yellow); color: var(--ink); font-weight: 900; font-size: 42px; padding: 34px 56px; border-radius: 999px; }
+  .endcard .n1 { margin-top: 44px; font-weight: 700; font-size: 34px; color: rgba(255,255,255,0.8); }
+  .endcard .n2 { margin-top: 14px; font-weight: 500; font-size: 26px; color: rgba(255,255,255,0.65); }
+</style>
+</head>
+<body>
+  <div class="label" id="label"></div>
+  <div class="title" id="title"><div class="l1"></div><div class="l2"></div></div>
+  <div class="card" id="card">
+    <div class="head">
+      <span class="back">‹</span><span class="name" id="name"></span>
+      <svg viewBox="0 0 24 24"><defs><linearGradient id="pg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e0306f"/><stop offset="1" stop-color="#b8186a"/></linearGradient></defs><path fill="url(#pg)" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg>
+    </div>
+    <div class="body"><div class="stack" id="stack"></div></div>
+  </div>
+  <div class="stamp" id="stamp"><span class="icon"></span><span class="txt"></span></div>
+  <div class="endcard" id="end">
+    <div class="e1"></div><div class="e2"></div>
+    <div class="q"></div>
+    <div class="cta"></div>
+    <div class="n1"></div><div class="n2"></div>
+  </div>
+<script>
+  let S, msgs = [], stamps = [], endAt = Infinity;
+  const clamp = (x) => Math.max(0, Math.min(1, x));
+  const easeOut = (x) => 1 - Math.pow(1 - x, 3);
+  const backOut = (x) => { const c = 1.6; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+  const $ = (id) => document.getElementById(id);
+
+  function init(scene) {
+    S = scene;
+    $('label').innerHTML = 'enovloom<span class="sep">|</span>' + S.label;
+    $('title').querySelector('.l1').textContent = S.title[0];
+    $('title').querySelector('.l2').textContent = S.title[1];
+    $('name').textContent = S.chat.name;
+    const stack = $('stack');
+    for (const ev of S.events) {
+      if (ev.type === 'stamp') { stamps.push(ev); continue; }
+      if (ev.type === 'end') { endAt = ev.t; continue; }
+      const m = document.createElement('div');
+      m.className = 'msg ' + ev.type;
+      const inn = document.createElement('div');
+      inn.className = 'in';
+      if (ev.type === 'left') {
+        inn.innerHTML = '<div class="avatar"></div><div class="bubble"></div>';
+        inn.querySelector('.avatar').textContent = S.chat.avatar;
+      } else if (ev.type === 'right') {
+        inn.innerHTML = '<div class="read">既読</div><div class="bubble"></div>';
+      } else {
+        inn.innerHTML = '<div class="pillbox"></div>';
+      }
+      (inn.querySelector('.bubble') || inn.querySelector('.pillbox')).textContent = ev.text;
+      m.appendChild(inn);
+      stack.appendChild(m);
+      msgs.push({ ev, el: m, inn, h: 0 });
+    }
+    for (const m of msgs) m.h = m.inn.offsetHeight;
+    const e = $('end'), E = S.end;
+    e.querySelector('.e1').textContent = E.title[0];
+    e.querySelector('.e2').textContent = E.title[1];
+    e.querySelector('.q').textContent = E.question;
+    e.querySelector('.cta').textContent = E.cta;
+    e.querySelector('.n1').textContent = E.note1;
+    e.querySelector('.n2').textContent = E.note2;
+  }
+
+  // Draws the frame at time t (seconds) and returns a key that only changes when the picture does.
+  function render(t) {
+    const key = [];
+    for (const m of msgs) {
+      const p = clamp((t - m.ev.t) / 0.32);
+      if (p <= 0) { m.el.style.display = 'none'; key.push(0); continue; }
+      m.el.style.display = '';
+      const e = easeOut(p);
+      m.el.style.height = (m.h * e).toFixed(2) + 'px';
+      m.inn.style.opacity = Math.min(1, p * 1.6).toFixed(3);
+      m.inn.style.transform = 'scale(' + (0.92 + 0.08 * backOut(p)).toFixed(4) + ')';
+      key.push(p.toFixed(3));
+    }
+    const st = $('stamp');
+    const s = stamps.find((x) => t >= x.t && t < x.until + 0.3);
+    if (s) {
+      st.className = 'stamp ' + s.color;
+      st.querySelector('.icon').textContent = s.icon;
+      st.querySelector('.txt').textContent = s.text;
+      const pin = clamp((t - s.t) / 0.2), pout = clamp((t - s.until) / 0.2);
+      st.style.opacity = (Math.min(1, pin * 5) * (1 - pout)).toFixed(3);
+      st.style.transform = 'rotate(-3deg) scale(' + (1.5 - 0.5 * easeOut(pin)).toFixed(4) + ')';
+      key.push('s' + pin.toFixed(3) + pout.toFixed(3));
+    } else { st.style.opacity = 0; key.push('s'); }
+    // the chat fades out first, then the end card comes in, so the two never overlap
+    const po = clamp((t - endAt) / 0.3), pe = clamp((t - endAt - 0.3) / 0.4);
+    $('card').style.opacity = (1 - po).toFixed(3);
+    $('title').style.opacity = (1 - po).toFixed(3);
+    const end = $('end');
+    end.style.opacity = easeOut(pe).toFixed(3);
+    end.style.transform = 'translateY(' + (30 * (1 - easeOut(pe))).toFixed(2) + 'px)';
+    key.push('e' + po.toFixed(3) + pe.toFixed(3));
+    return key.join('|');
+  }
+</script>
+</body>
+</html>
