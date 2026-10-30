@@ -22,4 +22,13 @@ node drama.js episodes/drama-ep1.json --prompts               # prompts to paste
 node drama.js episodes/drama-ep1.json <clips dir> video.mp4   # clips named 01.mp4, 02.mp4, ... as in the JSON
 ```
 
+Photos work as clips too (slow camera moves), and subtitles can carry 建前/本音 tags and sound effects;
+`episodes/honne-sample.json` shows that format. `.claude/skills/make-reel/SKILL.md` has every field and the rules.
+
+Check every reel before booking it; this also writes `video.sheet.png`, a frame every 2 seconds:
+
+```sh
+node check.js video.mp4 episodes/<id>.json
+```
+
 Needs Node with Playwright (Chromium), ffmpeg, and Python 3 with numpy.
