@@ -13,9 +13,23 @@ $stateFile = Join-Path $queue 'state.json'
 $state = if (Test-Path $stateFile) { Get-Content $stateFile -Raw | ConvertFrom-Json -AsHashtable } else { @{} }
 $now = [DateTimeOffset]::UtcNow
 $late = [TimeSpan]::FromHours([double]$cfg.lateLimitHours)
+# after an outage, overdue posts go out one at a time instead of all in the same minute
+$gap = [TimeSpan]::FromMinutes([double]$cfg.minGapMinutes)
 
 function Save-State { $state | ConvertTo-Json -Depth 6 | Set-Content $stateFile -Encoding utf8 }
 function Log([string]$m) { Write-Host ("{0:yyyy-MM-dd HH:mm} {1}" -f [DateTimeOffset]::UtcNow.ToOffset([TimeSpan]::FromHours(9)), $m) }
+# pwsh 7 turns ISO strings into DateTime while parsing JSON, so accept either form
+function To-Time($v) { if ($v -is [datetime]) { [DateTimeOffset]$v } else { [DateTimeOffset]::Parse([string]$v) } }
+function Err-Text($err) { $m = $err.ErrorDetails.Message; if (-not $m) { $m = $err.Exception.Message }; $m }
+# token or permission problems (190 invalid token, 102 session, 10 and 2xx permission) are not the post's fault
+function Auth-Error([string]$m) {
+  try { $x = ($m | ConvertFrom-Json).error } catch { return $null }
+  if ($x.code -in @(10, 102, 190) -or ($x.code -ge 200 -and $x.code -le 299)) { return "(#$($x.code)) $($x.message)" }
+}
+function Stop-Auth([string]$why) {
+  Write-Host "::error title=IG_PAGE_TOKEN rejected::Meta refused the token: $why. Check the Facebook account and the app in Meta, issue a new Page token, update the IG_PAGE_TOKEN secret, then run autopost by hand."
+  exit 1
+}
 function IG([string]$method, [string]$path, $body) {
   if ($method -eq 'GET') { return Invoke-RestMethod -Uri "$api/$path" -Headers $headers }
   Invoke-RestMethod -Method Post -Uri "$api/$path" -Headers $headers -ContentType 'application/json; charset=utf-8' -Body ($body | ConvertTo-Json -Compress)
@@ -38,17 +52,17 @@ function Wait-Url([string]$url) {
   throw "media URL not reachable: $url"
 }
 
-$me = IG GET "$($cfg.igUserId)?fields=username"
+try { $me = IG GET "$($cfg.igUserId)?fields=username" } catch { $why = Auth-Error (Err-Text $_); if ($why) { Stop-Auth $why }; throw }
 Log "account @$($me.username)"
 if (-not (Test-Path $queue)) { New-Item -ItemType Directory $queue | Out-Null }
 $failed = $false
+$lastPost = $state.Values | Where-Object { $_.postedAt } | ForEach-Object { To-Time $_.postedAt } | Sort-Object -Descending | Select-Object -First 1
 
 foreach ($dir in Get-ChildItem $queue -Directory | Sort-Object Name) {
   $id = $dir.Name
   $p = Get-Content (Join-Path $dir.FullName 'post.json') -Raw | ConvertFrom-Json
   if (-not $p.approved) { continue }
-  # pwsh 7 turns ISO strings into DateTime while parsing JSON, so accept either form
-  $at = if ($p.publishAt -is [datetime]) { [DateTimeOffset]$p.publishAt } else { [DateTimeOffset]::Parse([string]$p.publishAt) }
+  $at = To-Time $p.publishAt
   $slot = $at.ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')
   $e = $state[$id]
   if ($e -and $e.status -in @('published', 'publishing', 'missed', 'failed')) {
@@ -57,6 +71,7 @@ foreach ($dir in Get-ChildItem $queue -Directory | Sort-Object Name) {
   if ($at -gt $now) { continue }
   if (-not $e) { $e = @{ attempts = 0 }; $state[$id] = $e }
   if ($now - $at -gt $late) { $e.status = 'missed'; $e.scheduledFor = $slot; Save-State; Log "$($id): missed (more than $($cfg.lateLimitHours)h late)"; $failed = $true; continue }
+  if ($lastPost -and [DateTimeOffset]::UtcNow - $lastPost -lt $gap) { Log "$($id): waiting, last post was less than $($cfg.minGapMinutes) min ago"; continue }
 
   try {
     $e.attempts = [int]$e.attempts + 1
@@ -80,15 +95,21 @@ foreach ($dir in Get-ChildItem $queue -Directory | Sort-Object Name) {
     # mark before publishing so a crash can never cause a double post
     $e.status = 'publishing'; $e.containerId = $container; Save-State
     $mediaId = (IG POST "$ig/media_publish" @{ creation_id = $container }).id
-    $e.status = 'published'; $e.mediaId = $mediaId; $e.postedAt = [DateTimeOffset]::UtcNow.ToString('o'); $e.Remove('error')
+    $lastPost = [DateTimeOffset]::UtcNow
+    $e.status = 'published'; $e.mediaId = $mediaId; $e.postedAt = $lastPost.ToString('o'); $e.Remove('error')
     try { $e.permalink = (IG GET "$($mediaId)?fields=permalink").permalink } catch {}
     Save-State
     Log "$($id): published $($e.permalink)"
   } catch {
-    $msg = $_.ErrorDetails.Message; if (-not $msg) { $msg = $_.Exception.Message }
-    if ($e.status -ne 'publishing') { $e.error = $msg; if ($e.attempts -ge 3) { $e.status = 'failed' } }
+    $msg = Err-Text $_
+    $why = Auth-Error $msg
+    if ($e.status -ne 'publishing') {
+      # a bad token must not use up the post's attempts and leave it 'failed'
+      if ($why) { $e.attempts = [int]$e.attempts - 1 } else { $e.error = $msg; if ($e.attempts -ge 3) { $e.status = 'failed' } }
+    }
     Save-State
     Log "$($id): error: $msg"
+    if ($why) { Stop-Auth $why }
     $failed = $true
   }
 }

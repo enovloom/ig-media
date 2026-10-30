@@ -2,5 +2,6 @@
   "apiVersion": "v26.0",
   "igUserId": "17841480270651932",
   "pagesBaseUrl": "https://enovloom.github.io/ig-media",
-  "lateLimitHours": 12
+  "lateLimitHours": 12,
+  "minGapMinutes": 30
 }
