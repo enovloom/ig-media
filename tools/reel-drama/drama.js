@@ -11,7 +11,7 @@ const [epFile, a2, a3] = process.argv.slice(2);
 const ep = JSON.parse(fs.readFileSync(epFile, 'utf8'));
 const fill = (p) => p.replace(/\[(\w+)\]/g, (_, k) => ep.cast[k]).replace(/(^|[.!?] )([a-z])/g, (_, a, b) => a + b.toUpperCase());
 if (a2 === '--prompts') {
-  for (const c of ep.clips) console.log(`--- ${c.file}` + (c.refs ? `  (reference images: ${c.refs.join(', ')})` : '') + `\n${fill(c.prompt)}\n`);
+  for (const c of ep.clips.filter((x) => x.prompt)) console.log(`--- ${c.file}` + (c.refs ? `  (reference images: ${c.refs.join(', ')})` : '') + `\n${fill(c.prompt)}\n`);
   process.exit(0);
 }
 
@@ -48,9 +48,11 @@ if (a2 === '--prompts') {
     args.push('-i', file);
     const hasAudio = execFileSync('ffprobe', ['-v', 'error', '-select_streams', 'a', '-show_entries', 'stream=index', '-of', 'csv=p=0', file]).toString().trim() !== '';
     const last = i === n - 1;
-    f.push(`[${i}:v]trim=duration=${c.dur},setpts=PTS-STARTPTS,fps=${ep.fps},scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,setsar=1,format=yuv420p` +
+    const start = c.start || 0;
+    f.push(`[${i}:v]trim=start=${start}:duration=${c.dur},setpts=PTS-STARTPTS,fps=${ep.fps},scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,setsar=1,format=yuv420p` +
       (c.fadeIn ? `,fade=t=in:st=0:d=${c.fadeIn}` : '') + (last ? `,tpad=stop_mode=clone:stop_duration=${ep.endDur}` : '') + `[v${i}]`);
-    const src = hasAudio ? `[${i}:a]atrim=duration=${c.dur},asetpts=PTS-STARTPTS,aresample=48000` : `anullsrc=r=48000:cl=stereo,atrim=duration=${c.dur}`;
+    // mute drops the clip's own sound, e.g. when the model added voices the prompt asked it not to
+    const src = hasAudio && !c.mute ? `[${i}:a]atrim=start=${start}:duration=${c.dur},asetpts=PTS-STARTPTS,aresample=48000` : `anullsrc=r=48000:cl=stereo,atrim=duration=${c.dur}`;
     f.push(`${src},aformat=sample_fmts=fltp:channel_layouts=stereo` + (last ? `,apad=pad_dur=${ep.endDur}` : '') + `[a${i}]`);
   }
   f.push(ep.clips.map((_, i) => `[v${i}][a${i}]`).join('') + `concat=n=${n}:v=1:a=1[base][amb]`);

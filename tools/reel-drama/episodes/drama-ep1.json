@@ -17,13 +17,22 @@
   "clips": [
     {
       "file": "01.mp4",
-      "dur": 6.2,
+      "dur": 2.5,
       "prompt": "Vertical 9:16 cinematic shot. Night, inside [gym], warm lights. [mio] stands by the reception counter with her arms crossed, looking coldly at [manager], who holds a clipboard. He opens his mouth to answer, then stops and swallows his words. Slow push-in on his face, shallow depth of field. Realistic, natural skin, natural acting, Japanese TV drama look. No text, no subtitles, nobody speaks, quiet room tone only.",
       "refs": [
         "店長",
         "ミオ",
         "ジム"
-      ]
+      ],
+      "start": 0,
+      "mute": true
+    },
+    {
+      "file": "01.mp4",
+      "start": 3.1,
+      "dur": 3.7,
+      "mute": true,
+      "note": "same take as above, picked up after its dissolve so the cut is clean"
     },
     {
       "file": "02.mp4",
