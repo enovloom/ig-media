@@ -10,9 +10,9 @@
     ]
   },
   "cast": {
-    "manager": "the young Japanese man in the navy polo shirt (reference image)",
-    "mio": "the young Japanese woman in the charcoal gray zip-up jacket (reference image)",
-    "gym": "the spacious gym from the reference image, with a glass storefront open to the street, green artificial turf, mirror walls and a white reception counter"
+    "manager": "the young Japanese man with short center-parted black hair in the navy polo shirt (reference image)",
+    "mio": "the young Japanese woman with brown hair tied back in the charcoal gray zip-up jacket (reference image)",
+    "gym": "the gym from the reference image, with a tall glass storefront facing the street, bright green artificial turf covering the whole floor, a mirror wall, black power racks, dumbbell racks and a white reception counter by the glass entrance door"
   },
   "clips": [
     {
@@ -57,7 +57,7 @@
       "file": "05.mp4",
       "dur": 6.4,
       "fadeIn": 0.5,
-      "prompt": "Vertical 9:16 cinematic shot. Early morning, soft sunlight through the glass entrance door of [gym]. [manager] is alone, wiping the glass door with a cloth. [mio] arrives for work, stops behind him and watches in silence; her expression softens slightly. Realistic, natural skin, natural acting, Japanese TV drama look. No text, no subtitles, nobody speaks, quiet morning ambience only.",
+      "prompt": "Vertical 9:16 cinematic shot. Early morning, soft sunlight through the glass storefront of [gym]. [manager] is alone, wiping the glass door with a cloth. [mio] arrives for work, stops behind him and watches in silence; her expression softens slightly. Realistic, natural skin, natural acting, Japanese TV drama look. No text, no subtitles, nobody speaks, quiet morning ambience only.",
       "refs": [
         "店長",
         "ミオ",
