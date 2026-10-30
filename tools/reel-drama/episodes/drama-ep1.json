@@ -47,7 +47,7 @@
     {
       "file": "03.mp4",
       "dur": 6.4,
-      "prompt": "Vertical 9:16 cinematic medium two-shot. Night, inside [gym], by the reception counter. [manager] turns to [mio] and asks her a quiet question. She looks away, then answers back with a defensive, slightly annoyed expression. Realistic, natural skin, natural acting, Japanese TV drama look. No text, no subtitles, nobody speaks, room tone only.",
+      "prompt": "Vertical 9:16 cinematic medium two-shot. Night, inside [gym]. By the reception counter, [manager] turns to face [mio] with a gentle, questioning look. She glances away, crosses her arms, then looks back at him with a defensive, slightly annoyed expression. A quiet, tense moment between them. Realistic, natural acting, Japanese TV drama look. No text, no subtitles. Audio: soft room tone and the low hum of the gym only, no voices.",
       "refs": [
         "店長",
         "ミオ",
@@ -57,7 +57,7 @@
     {
       "file": "04.mp4",
       "dur": 6.0,
-      "prompt": "Vertical 9:16 cinematic close-up. Night, inside [gym]. [manager] speaks gently and sincerely to someone just off camera, with a small, honest smile. Warm light from the side. Slow push-in. Realistic, natural skin, natural acting, Japanese TV drama look. No text, no subtitles, nobody speaks, room tone only.",
+      "prompt": "Vertical 9:16 cinematic close-up. Night, inside [gym]. [manager] looks at someone just off camera with a gentle, sincere expression, then a small, honest smile slowly appears on his face. Warm light from the side. Slow push-in. Realistic, natural acting, Japanese TV drama look. No text, no subtitles. Audio: soft room tone only, no voices.",
       "refs": [
         "店長",
         "ジム"
@@ -67,7 +67,7 @@
       "file": "05.mp4",
       "dur": 6.4,
       "fadeIn": 0.5,
-      "prompt": "Vertical 9:16 cinematic shot. Early morning, soft sunlight through the glass storefront of [gym]. [manager] is alone, wiping the glass door with a cloth. [mio] arrives for work, stops behind him and watches in silence; her expression softens slightly. Realistic, natural skin, natural acting, Japanese TV drama look. No text, no subtitles, nobody speaks, quiet morning ambience only.",
+      "prompt": "Vertical 9:16 cinematic shot. Early morning, soft sunlight through the glass storefront of [gym]. [manager] is alone, wiping the glass door with a cloth. [mio] arrives for work, stops behind him and watches in silence; her expression softens slightly. Realistic, natural skin, natural acting, Japanese TV drama look. No text, no subtitles. Audio: quiet morning ambience only, no voices.",
       "refs": [
         "店長",
         "ミオ",
