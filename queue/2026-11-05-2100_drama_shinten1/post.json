@@ -1,11 +1,13 @@
 {
   "type": "reel",
   "template": "reel_drama",
-  "scenesFile": "tools/reel-drama/episodes/2026-11-05-2100_drama_shinten1.json",
+  "scenesFile": "tools/reel-drama/episodes/drama-ep1.json",
   "publishAt": "2026-11-05T21:00:00+09:00",
   "approved": false,
-  "media": ["video.mp4"],
+  "media": [
+    "video.mp4"
+  ],
   "thumbOffsetMs": 1000,
   "captionFile": "caption.txt",
-  "source": "ショートドラマ研究レポート 2026-10-30 企画案『誰も歓迎しなかった新店長』"
+  "source": "ショートドラマ研究レポート 2026-10-30 企画案『誰も歓迎しなかった新店長』（映像: Google Flow / Veo 3.1）"
 }
