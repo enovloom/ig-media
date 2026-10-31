@@ -38,4 +38,7 @@ script, each cut's start and end, the placeholder material and what is unchecked
 node review.js video.mp4 drafts/<id>/<id>.json drafts/<id>/review drafts/<id>/brief.md
 ```
 
+Time narration by reading it rather than guessing: `measure_narration.py` reads each line with Open JTalk at
+normal speed and prints how long it takes (setup is in the file's header).
+
 Needs Node with Playwright (Chromium), ffmpeg, and Python 3 with numpy.
