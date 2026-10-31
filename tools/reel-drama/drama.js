@@ -21,6 +21,7 @@ const isPhoto = (file) => /\.(jpe?g|png|webp)$/i.test(file);
 
 // A photo becomes a slow camera move. It is worked on at twice the output size so the move does not jitter.
 const MOVES = {
+  none: ['1', 'CX', 'CY'],
   in: ['1+0.12*P', 'CX', 'CY'],
   out: ['1.12-0.12*P', 'CX', 'CY'],
   left: ['1.12', '(iw-iw/zoom)*(1-P)', 'CY'],
@@ -36,7 +37,9 @@ const photoChain = (i, c, fps) => {
   const base = c.fit === 'blur'
     ? `[${i}:v]split[pb${i}][pf${i}];[pb${i}]scale=2160:3840:force_original_aspect_ratio=increase,crop=2160:3840,boxblur=40:2,eq=brightness=-0.12[pbb${i}];` +
       `[pf${i}]scale=2160:3840:force_original_aspect_ratio=decrease[pff${i}];[pbb${i}][pff${i}]overlay=(W-w)/2:(H-h)/2`
-    : `[${i}:v]scale=2160:3840:force_original_aspect_ratio=increase,crop=2160:3840:(iw-2160)*${c.focusX ?? 0.5}:(ih-3840)*${c.focusY ?? 0.5}`;
+    : `[${i}:v]scale=2160:3840:force_original_aspect_ratio=increase,crop=2160:3840:(iw-2160)*${c.focusX ?? 0.5}:(ih-3840)*${c.focusY ?? 0.5}` +
+      // dim blurs and darkens the photo so a text card on top of it reads as the subject
+      (c.dim ? ',boxblur=24:2,eq=brightness=-0.18' : '');
   // the photo comes in as a looped stream of the clip's length and zoompan makes one frame from each (d=1):
   // a single still with d=frames ends early when tpad follows it
   return `${base},setsar=1,zoompan=z='${z}':x='${x}':y='${y}':d=1:s=1080x1920:fps=${fps},format=yuv420p`;

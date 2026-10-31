@@ -9,6 +9,8 @@ description: enovloom の Instagram リール（店長向け、note 販売への
 再生数だけでなく、保存・シェア・プロフィールへのアクセス・note の閲覧と購入まで見る。
 
 道具はリポジトリの `tools/reel-drama/`。素材と台本さえあれば、仕上げ・チェック・予約はここで全部できる。
+1本ごとの焦点の決め方・冒頭3案・編集表・冒頭プレビューから始める進め方・渡すものは、**reel-director スキル**に従う。
+試作は `tools/reel-drama/drafts/<id>/`（例 `drafts/honne-01/`: brief.md、エピソード JSON、仮素材、540px の確認用コピー）。
 
 ## 流れ
 
@@ -77,10 +79,10 @@ LINE 風の会話（`render.js`、例 `episodes/chat-ep1.json`）。手軽だが
 ## エピソード JSON（`tools/reel-drama/episodes/`）
 - `style: "drama"`、`fps: 30`、`label`（左上の小さい文字）、`bgm`（`pad` / `comedy` / `none`）
 - `hook`: `{ until, lines: [1行目, 黄色の2行目] }`（1行だけでもよい）
-- `clips[]`: `file`（動画か写真）、`dur`、動画は `start` `mute` `fadeIn` `focusX/Y` `crop`、写真は `move`（in/out/left/right/up/down）`fit: "blur"`（横向き写真をそのまま見せる）
+- `clips[]`: `file`（動画か写真）、`dur`、動画は `start` `mute` `fadeIn` `focusX/Y` `crop`、写真は `move`（none/in/out/left/right/up/down）`fit: "blur"`（横向き写真をそのまま見せる）`dim`（ぼかして暗くし、文字カードの背景にする）
 - `subs[]`: `t` `until` `text`、`who`（話す人。店長は青、ほかはピンク）、`tag`（建前／本音）、`pos: "upper"`、`tone: "accent"`、`sfx`（pop, tsukkomi, don, gaan, kira, whoosh, ding, buzz）。`who` も `tag` もない行は中央のカード
 - `audio[]`: `{ file, t, gain }` ボイスメモなどを重ねる（素材フォルダに置く）
-- `endDur` と `end`（`title` 2行、`question`、`cta`、`note1`、`note2`）
+- `endDur` と `end`（`title` 2行、`question`、`cta`、`note1`、`note2`）。書かなかった項目は表示されない。誘導は1つに絞る
 - 例: `episodes/honne-sample.json`（F1）、`episodes/drama-ep1.json`（F4、AI 映像）
 
 ## チェック（書き出すたびに）

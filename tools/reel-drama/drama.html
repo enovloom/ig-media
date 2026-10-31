@@ -90,10 +90,12 @@
       const e = $('end'), E = ep.end;
       e.querySelector('.e1').textContent = E.title[0];
       e.querySelector('.e2').textContent = E.title[1];
-      e.querySelector('.q').textContent = E.question;
-      e.querySelector('.cta').textContent = E.cta;
-      e.querySelector('.n1').textContent = E.note1;
-      e.querySelector('.n2').textContent = E.note2;
+      // parts an episode leaves out are hidden, so the end card can carry a single call to action
+      for (const [cls, v] of [['q', E.question], ['cta', E.cta], ['n1', E.note1], ['n2', E.note2]]) {
+        const el = e.querySelector('.' + cls);
+        el.textContent = v || '';
+        el.style.display = v ? '' : 'none';
+      }
       document.querySelector('.frame').style.display = 'block';
       document.querySelector('.shade-top').style.display = 'none';
       document.querySelector('.shade-bottom').style.display = 'none';

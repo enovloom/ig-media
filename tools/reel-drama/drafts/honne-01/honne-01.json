@@ -1,0 +1,115 @@
+{
+  "style": "drama",
+  "bgm": "comedy",
+  "fps": 30,
+  "label": "建前と本音 #1",
+  "note": "仮素材（placeholders/）で組んだ試作。お店の写真が届いたら clips の file を差し替える",
+  "clips": [
+    {
+      "file": "twoshot.jpg",
+      "dur": 3.0,
+      "move": "in",
+      "role": "店長がスタッフに声をかける場面"
+    },
+    {
+      "file": "mio_close.jpg",
+      "dur": 4.2,
+      "move": "in",
+      "role": "スタッフの返事と、頭の中"
+    },
+    {
+      "file": "gym.jpg",
+      "dur": 3.4,
+      "move": "none",
+      "dim": true,
+      "role": "気づきのカードを読ませる"
+    },
+    {
+      "file": "manager.jpg",
+      "dur": 4.6,
+      "move": "in",
+      "focusY": 0.2,
+      "role": "店長が聞き方を変える"
+    },
+    {
+      "file": "gym.jpg",
+      "dur": 3.6,
+      "move": "down",
+      "focusY": 0.7,
+      "role": "具体的な困りごと（受付の電話）が出てくる"
+    },
+    {
+      "file": "morning.jpg",
+      "dur": 3.4,
+      "move": "in",
+      "role": "持ち帰る行動のまとめ"
+    }
+  ],
+  "subs": [
+    {
+      "t": 0.0,
+      "until": 3.0,
+      "who": "店長",
+      "pos": "upper",
+      "text": "何か困ってること、ある？"
+    },
+    {
+      "t": 3.1,
+      "until": 7.2,
+      "who": "ミオ",
+      "tag": "建前",
+      "pos": "upper",
+      "text": "大丈夫です！"
+    },
+    {
+      "t": 4.1,
+      "until": 7.2,
+      "who": "ミオ",
+      "tag": "本音",
+      "text": "何から話せばいいか、\n分からない",
+      "sfx": "gaan"
+    },
+    {
+      "t": 7.3,
+      "until": 10.6,
+      "text": "「困ってる？」は\n広すぎて、答えにくい",
+      "sfx": "whoosh"
+    },
+    {
+      "t": 10.9,
+      "until": 15.2,
+      "tag": "変える前",
+      "pos": "upper",
+      "text": "何か困ってる？"
+    },
+    {
+      "t": 11.8,
+      "until": 15.2,
+      "tag": "変えた後",
+      "tone": "accent",
+      "text": "今日いちばん時間が\nかかった作業、どれ？",
+      "sfx": "ding"
+    },
+    {
+      "t": 15.5,
+      "until": 18.8,
+      "who": "ミオ",
+      "text": "予約変更の電話が、\nお昼に集中してて…"
+    },
+    {
+      "t": 19.1,
+      "until": 22.2,
+      "tag": "ポイント",
+      "text": "気持ちではなく、\n出来事を聞く"
+    }
+  ],
+  "endDur": 3.5,
+  "end": {
+    "title": [
+      "スタッフとの関わり方は",
+      "noteで書いています"
+    ],
+    "cta": "プロフィールのリンクから →",
+    "note2": "※よくある場面をもとにした創作です"
+  }
+}
