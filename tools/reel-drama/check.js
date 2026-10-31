@@ -39,7 +39,10 @@ check(!blacks.length, 'no black frames', `black screen at ${blacks.map((s) => s.
 
 if (epFile) {
   const ep = JSON.parse(fs.readFileSync(epFile, 'utf8'));
-  const subs = ep.subs || [];
+  // an explainer's readable lines are its items; a drama's are its subtitles
+  const subs = ep.style === 'explainer'
+    ? ep.items.filter((it) => it.text || it.quote).map((it) => ({ t: it.quoteT ?? it.t0, until: it.t1 ?? ep.duration, text: (it.quote || it.text).replace(/\[\[|\]\]|\{\{|\}\}/g, '') }))
+    : ep.subs || [];
   const first = Math.min(ep.hook ? 0 : Infinity, ...subs.map((s) => s.t));
   check(first <= 1, 'something to read within the first second', `nothing on screen until ${first}s; the first second decides whether people stay`);
   for (const s of subs) {
@@ -49,7 +52,7 @@ if (epFile) {
     for (const l of lines) if (l.length > 15) warn.push(`line longer than 15 characters: ${l}`);
     if (s.until - s.t < 0.15 * chars + 0.5) warn.push(`shown too briefly to read (${(s.until - s.t).toFixed(1)}s for ${chars} characters): ${s.text.replace(/\n/g, '/')}`);
   }
-  check(!!ep.end && !!ep.end.cta, 'end card leads somewhere', 'no end card call to action');
+  if (ep.style === 'drama') check(!!ep.end && !!ep.end.cta, 'end card leads somewhere', 'no end card call to action');
 }
 
 // contact sheet: one frame every 2 seconds, six to a row

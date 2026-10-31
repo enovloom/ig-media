@@ -20,6 +20,9 @@ description: enovloom の Instagram リール（店長向け、note 販売への
 4. 素材をそろえる … お店の写真・動画が第一。AI 映像は補助（下の「素材」）
 5. エピソード JSON を書いて書き出す … `node drama.js episodes/<id>.json <素材フォルダ> video.mp4`
 6. チェック … `node check.js video.mp4`。WARNING が出たら直す。コマ一覧の画像を目で見る
+   試作ができたら、ChatGPT に見直してもらう資料も必ず出す: `node review.js video.mp4 <json> drafts/<id>/review drafts/<id>/brief.md`
+   （1秒・3秒・5秒の画面を別々の JPEG（1080x1920、字幕が読める大きさ）、全体の台本と各カットの開始・終了秒、仮素材と未確認の項目を書いた review.txt）。
+   仮素材の写真・動画はエピソード JSON の clip に `placeholder: true` と `want`（本番で使いたいもの）を書いておく。図解は `cuts`（t0, t1, narration, role, material）を書く
 7. キャプション … 下の「キャプションの型」
 8. 予約 … `queue/<id>/post.json` と `caption.txt`、`media/<id>/video.mp4`。**本人の OK が出るまで `"approved": false`**
 9. 測定 … `stats/insights.json`（`cloud/insights.ps1` が毎日記録）。週に1回、型ごとに比べて次の台本に反映

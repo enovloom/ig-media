@@ -9,40 +9,52 @@
       "file": "twoshot.jpg",
       "dur": 3.0,
       "move": "in",
-      "role": "店長がスタッフに声をかける場面"
+      "role": "店長がスタッフに声をかける場面",
+      "placeholder": true,
+      "want": "店長とスタッフが受付で並んでいる写真（後ろ姿でよい）"
     },
     {
       "file": "mio_close.jpg",
       "dur": 4.2,
       "move": "in",
-      "role": "スタッフの返事と、頭の中"
+      "role": "スタッフの返事と、頭の中",
+      "placeholder": true,
+      "want": "スタッフの手元（作業中）"
     },
     {
       "file": "gym.jpg",
       "dur": 3.4,
       "move": "none",
       "dim": true,
-      "role": "気づきのカードを読ませる"
+      "role": "気づきのカードを読ませる",
+      "placeholder": true,
+      "want": "お店の中ならどこでも1枚（ぼかして背景にする）"
     },
     {
       "file": "manager.jpg",
       "dur": 4.6,
       "move": "in",
       "focusY": 0.2,
-      "role": "店長が聞き方を変える"
+      "role": "店長が聞き方を変える",
+      "placeholder": true,
+      "want": "店長がスタッフに話しかけている手元・後ろ姿"
     },
     {
       "file": "gym.jpg",
       "dur": 3.6,
       "move": "down",
       "focusY": 0.7,
-      "role": "具体的な困りごと（受付の電話）が出てくる"
+      "role": "具体的な困りごと（受付の電話）が出てくる",
+      "placeholder": true,
+      "want": "受付の電話・予約表・時計のどれか"
     },
     {
       "file": "morning.jpg",
       "dur": 3.4,
       "move": "in",
-      "role": "持ち帰る行動のまとめ"
+      "role": "持ち帰る行動のまとめ",
+      "placeholder": true,
+      "want": "店長とスタッフが一緒に予約表やタブレットを見ている"
     }
   ],
   "subs": [

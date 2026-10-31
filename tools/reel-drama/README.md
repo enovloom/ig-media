@@ -31,4 +31,11 @@ Check every reel before booking it; this also writes `video.sheet.png`, a frame 
 node check.js video.mp4 episodes/<id>.json
 ```
 
+After a draft, make the review pack for ChatGPT (frames at 1, 3 and 5 s as JPEGs, and review.txt with the
+script, each cut's start and end, the placeholder material and what is unchecked):
+
+```sh
+node review.js video.mp4 drafts/<id>/<id>.json drafts/<id>/review drafts/<id>/brief.md
+```
+
 Needs Node with Playwright (Chromium), ffmpeg, and Python 3 with numpy.
