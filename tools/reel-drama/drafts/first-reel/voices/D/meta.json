@@ -1,0 +1,22 @@
+{
+ "profile": "D",
+ "name": "女性・少し明るく親しみのある会話調",
+ "voice": "voices/mei/mei_normal.htsvoice",
+ "r": 1.02,
+ "fm": 1.0,
+ "jf": 1.35,
+ "pace": 0.85,
+ "lengths": [
+  4.024,
+  2.67,
+  1.105,
+  2.478,
+  2.956,
+  3.604
+ ],
+ "marks": {
+  "handan": 0.99,
+  "issho": 2.72
+ },
+ "gain_db": -1.0
+}

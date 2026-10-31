@@ -1,0 +1,22 @@
+{
+ "profile": "C",
+ "name": "女性・穏やかに相談に乗る",
+ "voice": "voices/mei/mei_normal.htsvoice",
+ "r": 0.96,
+ "fm": -1.0,
+ "jf": 1.0,
+ "pace": 1.25,
+ "lengths": [
+  4.286,
+  2.838,
+  1.145,
+  2.618,
+  3.132,
+  3.798
+ ],
+ "marks": {
+  "handan": 1.03,
+  "issho": 2.87
+ },
+ "gain_db": -1.0
+}

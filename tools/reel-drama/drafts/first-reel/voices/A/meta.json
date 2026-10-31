@@ -1,0 +1,22 @@
+{
+ "profile": "A",
+ "name": "男性・穏やかに相談に乗る",
+ "voice": "/usr/share/hts-voice/nitech-jp-atr503-m001/nitech_jp_atr503_m001.htsvoice",
+ "r": 0.96,
+ "fm": -0.5,
+ "jf": 1.0,
+ "pace": 1.25,
+ "lengths": [
+  4.263,
+  2.743,
+  1.188,
+  2.39,
+  2.948,
+  3.541
+ ],
+ "marks": {
+  "handan": 0.89,
+  "issho": 2.63
+ },
+ "gain_db": 5.2
+}

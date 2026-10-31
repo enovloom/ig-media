@@ -38,7 +38,10 @@ script, each cut's start and end, the placeholder material and what is unchecked
 node review.js video.mp4 drafts/<id>/<id>.json drafts/<id>/review drafts/<id>/brief.md
 ```
 
-Time narration by reading it rather than guessing: `measure_narration.py` reads each line with Open JTalk at
-normal speed and prints how long it takes (setup is in the file's header).
+Narration is a synthetic voice, never the account owner's recording. `voice.py` reads the lines with one of the
+profiles in `voices/profiles.json` (A male calm, B male bright, C female calm, D female bright) and records each
+line's length for timing; it needs `apt-get install open-jtalk open-jtalk-mecab-naist-jdic hts-voice-nitech-jp-atr503-m001`.
+The Mei voice files in `voices/mei/` are CC BY 3.0 (see COPYRIGHT.txt). `measure_narration.py` is the older
+way of timing lines with pyopenjtalk.
 
 Needs Node with Playwright (Chromium), ffmpeg, and Python 3 with numpy.

@@ -1,0 +1,7 @@
+{
+  "_note": "Synthetic narration voices (Open JTalk). None of them is or imitates the account owner's voice. Calm and bright differ in intonation (jf), pitch (fm), a small rate change (r) and the pauses between lines (pace); the engine has no emotion or style setting. Measured on first-reel: A 113 Hz / 8.9 semitones, B 129 Hz / 10.1, C 333 Hz / 9.2, D 375 Hz / 10.6.",
+  "A": { "name": "男性・穏やかに相談に乗る", "voice": "/usr/share/hts-voice/nitech-jp-atr503-m001/nitech_jp_atr503_m001.htsvoice", "r": 0.96, "fm": -0.5, "jf": 1.0, "pace": 1.25 },
+  "B": { "name": "男性・少し明るく親しみのある会話調", "voice": "/usr/share/hts-voice/nitech-jp-atr503-m001/nitech_jp_atr503_m001.htsvoice", "r": 1.02, "fm": 1.5, "jf": 1.3, "pace": 0.85 },
+  "C": { "name": "女性・穏やかに相談に乗る", "voice": "voices/mei/mei_normal.htsvoice", "r": 0.96, "fm": -1.0, "jf": 1.0, "pace": 1.25 },
+  "D": { "name": "女性・少し明るく親しみのある会話調", "voice": "voices/mei/mei_normal.htsvoice", "r": 1.02, "fm": 1.0, "jf": 1.35, "pace": 0.85 }
+}
