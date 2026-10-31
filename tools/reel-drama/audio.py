@@ -8,7 +8,12 @@ import numpy as np
 SR = 48000
 scene = json.load(open(sys.argv[1], encoding='utf-8'))
 drama = scene.get('style') == 'drama'
-if drama:
+explainer = scene.get('style') == 'explainer'
+if explainer:
+    # an explainer names its sounds directly: "sfx": [{ "t": 1.2, "name": "pop" }]
+    dur = scene['duration']
+    events = [{'t': x['t'], 'type': 'sfx', 'name': x['name']} for x in scene.get('sfx', [])]
+elif drama:
     clip_end = sum(c['dur'] for c in scene['clips'])
     dur = clip_end + scene['endDur']
     events = [{'t': clip_end, 'type': 'end'}] + [{'t': x['t'], 'type': 'sfx', 'name': x['sfx']} for x in scene['subs'] if x.get('sfx')]
@@ -53,7 +58,7 @@ beat = 60 / 92
 kick = tone(130, 45, 0.35, 0.12)
 snare = noise(0.2, 0.05, smooth=3)
 hat = noise(0.05, 0.012)
-bgm = scene.get('bgm', 'pad') if drama else 'chat'
+bgm = scene.get('bgm', 'pad') if drama else scene.get('bgm', 'chat')
 b = 0
 while bgm == 'chat' and b * beat < dur:
     t = b * beat

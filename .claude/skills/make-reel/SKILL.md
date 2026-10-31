@@ -47,6 +47,11 @@ description: enovloom の Instagram リール（店長向け、note 販売への
 - 2〜3秒でカットを切り替える。8秒の素材は `start` と `dur` で2〜3本に分けて使う
 - 見え方が変わる「瞬間」を必ず入れる（ノートを開く、本当の理由を聞く、など）
 
+### F6 図解（ナレーション＋図）
+人物の写真や映像がなくても作れる。困っている場面 → 振り返りの一文 → 図（2つの領域、変更前と変更後など）→ 持ち帰る行動。
+`explainer.html`（`style: "explainer"`、`render.js` で書き出す）。例 `drafts/first-reel/`（reel-director の同梱例を試作したもの）。
+ナレーションは本人のボイスメモが届いたら重ね、図の出るタイミングを声の区切りに合わせる。
+
 ### F5 チャット型
 LINE 風の会話（`render.js`、例 `episodes/chat-ep1.json`）。手軽だが伸びていないので、F1〜F4 の補助に使う。
 
@@ -84,6 +89,12 @@ LINE 風の会話（`render.js`、例 `episodes/chat-ep1.json`）。手軽だが
 - `audio[]`: `{ file, t, gain }` ボイスメモなどを重ねる（素材フォルダに置く）
 - `endDur` と `end`（`title` 2行、`question`、`cta`、`note1`、`note2`）。書かなかった項目は表示されない。誘導は1つに絞る
 - 例: `episodes/honne-sample.json`（F1）、`episodes/drama-ep1.json`（F4、AI 映像）
+
+図解（F6）は別の形式: `style: "explainer"`, `template: "explainer.html"`, `duration`, `label`, `bgm`, `sfx: [{ t, name }]`, `items[]`。
+item は `type`（text / avatar / card / bubble / zone / formula）、`t0` `t1`、`x` `y`（`w` `h`）。text は `size` `align` と `[[強調]]`、
+card は `from` `to` `move: [開始, 終了]`、zone は `style`（solid / dashed）`tag` `quote` `quoteT`、formula は `{{白い箱}}` と `[[黄色い箱]]`。
+`fadeTo: { t, opacity }` で薄くし、`moveTo: { t, dur, dy, scale }` で動かして縮める。
+書き出しは `python3 audio.py <json> audio.wav && node render.js <json> audio.wav video.mp4`。
 
 ## チェック（書き出すたびに）
 `node check.js video.mp4` が、長さ・1080x1920・30fps・音の有無・音量（-14 LUFS 前後）・黒帯を調べ、コマ一覧の画像を作る。

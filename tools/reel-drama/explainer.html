@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: 'NSJ'; font-weight: 500; src: url('fonts/NotoSansJP-500.ttf'); }
+  @font-face { font-family: 'NSJ'; font-weight: 700; src: url('fonts/NotoSansJP-700.ttf'); }
+  @font-face { font-family: 'NSJ'; font-weight: 900; src: url('fonts/NotoSansJP-900.ttf'); }
+  :root { --ink: #1f2a37; --yellow: #fbe55f; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; }
+  body {
+    font-family: 'NSJ', 'Noto Color Emoji', sans-serif; position: relative; color: #fff;
+    background:
+      radial-gradient(circle at 12% 22%, rgba(255,255,255,0.09), transparent 38%),
+      radial-gradient(circle at 88% 78%, rgba(255,255,255,0.07), transparent 42%),
+      linear-gradient(180deg, #2c2b69 0%, #4a2f73 40%, #8a3778 75%, #b63c78 100%);
+  }
+  .label { position: absolute; left: 64px; top: 230px; font-weight: 700; font-size: 30px; color: rgba(255,255,255,0.82); }
+  .label .sep { display: inline-block; margin: 0 10px; color: rgba(255,255,255,0.45); font-weight: 500; }
+  .item { position: absolute; opacity: 0; }
+  .hi { background: var(--yellow); color: var(--ink); border-radius: 10px; padding: 0 10px; margin: 0 2px; }
+
+  .text { font-weight: 900; line-height: 1.3; white-space: pre-line; text-shadow: 0 3px 12px rgba(0,0,0,0.25); }
+  .avatar { width: 170px; text-align: center; margin-left: -85px; margin-top: -85px; }
+  .avatar .face { width: 170px; height: 170px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 96px; box-shadow: 0 10px 30px rgba(0,0,0,0.25); }
+  .avatar .name { margin-top: 16px; font-weight: 900; font-size: 38px; }
+  .card { margin-left: -100px; margin-top: -70px; width: 200px; height: 140px; border-radius: 22px; background: #fff; color: var(--ink); display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 900; font-size: 36px; box-shadow: 0 12px 30px rgba(0,0,0,0.3); }
+  .card .icon { font-size: 54px; line-height: 1.1; }
+  .bubble { transform-origin: 80% 100%; background: #fff; color: var(--ink); font-weight: 900; font-size: 46px; padding: 22px 34px; border-radius: 34px; white-space: nowrap; box-shadow: 0 10px 26px rgba(0,0,0,0.25); }
+  .bubble::after { content: ''; position: absolute; right: 54px; bottom: -22px; border: 14px solid transparent; border-top: 16px solid #fff; border-left: 4px solid transparent; }
+  .zone { border-radius: 30px; padding: 34px 40px; transform-origin: 50% 0; }
+  .zone.solid { border: 7px solid var(--yellow); background: rgba(251,229,95,0.14); }
+  .zone.dashed { border: 7px dashed rgba(255,255,255,0.85); background: rgba(255,255,255,0.05); }
+  .zone .tag { display: inline-block; font-weight: 900; font-size: 40px; padding: 8px 26px; border-radius: 999px; }
+  .zone.solid .tag { background: var(--yellow); color: var(--ink); }
+  .zone.dashed .tag { border: 4px solid #fff; color: #fff; }
+  .zone .quote { margin-top: 26px; font-weight: 900; font-size: 64px; line-height: 1.35; white-space: pre-line; }
+  .formula { font-weight: 900; text-align: center; white-space: nowrap; }
+  .formula .box { display: inline-block; border-radius: 18px; padding: 10px 26px; margin: 0 8px; }
+  .formula .box.plain { background: #fff; color: var(--ink); }
+  .formula .box.hi { background: var(--yellow); color: var(--ink); }
+</style>
+</head>
+<body>
+<div class="label" id="label"></div>
+<div id="stage"></div>
+<script>
+  // An explainer is a list of items, each shown from t0 to t1 with a short fade and rise.
+  // types: text, avatar, card (slides from -> to during move), bubble, zone (quote appears at quoteT), formula.
+  // fadeTo { t, opacity } dims an item; moveTo { t, dur, dy, scale } moves and shrinks it.
+  let S, items = [];
+  const clamp = (x) => Math.max(0, Math.min(1, x));
+  const ease = (x) => 1 - Math.pow(1 - x, 3);
+  const pop = (x) => { const c = 1.7; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+  const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  // [[...]] marks the part of a line that gets the yellow highlight (or a highlighted box in a formula)
+  const marked = (s, cls) => esc(s).replace(/\[\[(.+?)\]\]/g, `<span class="${cls}">$1</span>`);
+
+  function init(scene) {
+    S = scene;
+    document.getElementById('label').innerHTML = 'enovloom<span class="sep">|</span>' + esc(S.label);
+    const stage = document.getElementById('stage');
+    for (const it of S.items) {
+      const el = document.createElement('div');
+      el.className = 'item ' + it.type + (it.style ? ' ' + it.style : '');
+      el.style.left = it.x + 'px';
+      el.style.top = it.y + 'px';
+      if (it.w) el.style.width = it.w + 'px';
+      if (it.h) el.style.height = it.h + 'px';
+      if (it.type === 'text') {
+        el.innerHTML = marked(it.text, 'hi');
+        el.style.fontSize = (it.size || 72) + 'px';
+        el.style.textAlign = it.align || 'left';
+      } else if (it.type === 'avatar') {
+        el.innerHTML = `<div class="face">${it.icon}</div><div class="name">${esc(it.name)}</div>`;
+      } else if (it.type === 'card') {
+        el.innerHTML = `<div class="icon">${it.icon}</div><div>${esc(it.text)}</div>`;
+      } else if (it.type === 'bubble') {
+        el.textContent = it.text;
+      } else if (it.type === 'zone') {
+        el.innerHTML = `<div class="tag">${esc(it.tag)}</div><div class="quote">${esc(it.quote)}</div>`;
+      } else if (it.type === 'formula') {
+        el.innerHTML = esc(it.text).replace(/\[\[(.+?)\]\]/g, '<span class="box hi">$1</span>').replace(/\{\{(.+?)\}\}/g, '<span class="box plain">$1</span>');
+        el.style.fontSize = (it.size || 64) + 'px';
+      }
+      stage.appendChild(el);
+      items.push({ it, el, quote: el.querySelector('.quote') });
+    }
+  }
+
+  // Draws the frame at time t and returns a key that only changes when the picture does.
+  function render(t) {
+    const key = [];
+    for (const { it, el, quote } of items) {
+      const pin = clamp((t - it.t0) / (it.type === 'bubble' ? 0.22 : 0.3));
+      const pout = it.t1 ? clamp((t - it.t1) / 0.25) : 0;
+      let op = ease(pin) * (1 - pout);
+      if (it.fadeTo) op *= 1 - (1 - it.fadeTo.opacity) * ease(clamp((t - it.fadeTo.t) / 0.4));
+      let tf = '';
+      if (it.type === 'card' && it.from) {
+        const m = ease(clamp((t - it.move[0]) / (it.move[1] - it.move[0])));
+        el.style.left = (it.from[0] + (it.to[0] - it.from[0]) * m) + 'px';
+        el.style.top = (it.from[1] + (it.to[1] - it.from[1]) * m) + 'px';
+        key.push(m.toFixed(3));
+      }
+      // a bubble is centred on its x and pops in
+      if (it.type === 'bubble') tf += `translateX(-50%) scale(${(0.6 + 0.4 * pop(pin)).toFixed(4)}) `;
+      else tf += `translateY(${(24 * (1 - ease(pin))).toFixed(2)}px) `;
+      if (it.moveTo) {
+        const m = ease(clamp((t - it.moveTo.t) / (it.moveTo.dur || 0.6)));
+        tf += `translateY(${(it.moveTo.dy * m).toFixed(2)}px) scale(${(1 + ((it.moveTo.scale ?? 1) - 1) * m).toFixed(4)})`;
+        key.push('m' + m.toFixed(3));
+      }
+      el.style.opacity = op.toFixed(3);
+      el.style.transform = tf;
+      if (quote) {
+        const q = ease(clamp((t - (it.quoteT ?? it.t0)) / 0.3));
+        quote.style.opacity = q.toFixed(3);
+        quote.style.transform = `translateY(${(16 * (1 - q)).toFixed(2)}px)`;
+        key.push('q' + q.toFixed(3));
+      }
+      key.push(op.toFixed(3) + tf);
+    }
+    return key.join('|');
+  }
+
+  // Visible items that run off the frame or under the edges in the frame drawn last, for the render script to report.
+  function overflow() {
+    const bad = [];
+    for (const { it, el } of items) {
+      if (Number(el.style.opacity) < 0.05) continue;
+      const r = el.getBoundingClientRect();
+      if (r.left < 24 || r.right > 1056 || r.bottom > 1900) bad.push((it.text || it.tag || it.name || it.type).slice(0, 30));
+    }
+    return bad;
+  }
+</script>
+</body>
+</html>

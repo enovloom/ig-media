@@ -1,4 +1,4 @@
-// Renders scene.json into a 1080x1920 30fps reel.
+// Renders scene.json into a 1080x1920 30fps reel: the chat page (template.html) or the one named by "template".
 //   node render.js <scene.json> --stills 0.6,9,20,33   -> PNG stills for checking the layout
 //   node render.js <scene.json> <audio.wav> <out.mp4>  -> full video
 const { chromium } = require('playwright');
@@ -11,8 +11,15 @@ const path = require('path');
   const scene = JSON.parse(fs.readFileSync(sceneFile, 'utf8'));
   const browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: 1080, height: 1920 } });
-  await page.goto('file://' + path.join(__dirname, 'template.html'));
+  await page.goto('file://' + path.join(__dirname, scene.template || 'template.html'));
   await page.evaluate(async (s) => { await document.fonts.load('900 74px NSJ'); await document.fonts.load('700 44px NSJ'); await document.fonts.load('500 26px NSJ'); init(s); await document.fonts.ready; }, scene);
+
+  // pages that can tell what runs off the frame are sampled every half second
+  const off = new Set();
+  for (let t = 0; t < scene.duration; t += 0.5) {
+    for (const w of await page.evaluate((x) => { render(x); return typeof overflow === 'function' ? overflow() : []; }, t)) off.add(w);
+  }
+  for (const w of off) console.log('WARNING text runs off the frame:', w);
 
   if (a2 === '--stills') {
     for (const t of a3.split(',').map(Number)) {
@@ -27,7 +34,7 @@ const path = require('path');
   const fps = scene.fps, n = Math.round(scene.duration * fps);
   const ff = spawn('ffmpeg', ['-v', 'error', '-y', '-f', 'image2pipe', '-framerate', String(fps), '-c:v', 'mjpeg', '-i', '-',
     '-i', audio, '-map', '0:v', '-map', '1:a', '-c:v', 'libx264', '-preset', 'medium', '-crf', '18', '-pix_fmt', 'yuv420p',
-    '-r', String(fps), '-c:a', 'aac', '-b:a', '192k', '-shortest', '-movflags', '+faststart', out], { stdio: ['pipe', 'inherit', 'inherit'] });
+    '-r', String(fps), '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11,aresample=48000', '-c:a', 'aac', '-b:a', '192k', '-shortest', '-movflags', '+faststart', out], { stdio: ['pipe', 'inherit', 'inherit'] });
   let lastKey = null, lastBuf = null;
   for (let i = 0; i < n; i++) {
     const key = await page.evaluate((x) => render(x), i / fps);
