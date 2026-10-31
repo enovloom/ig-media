@@ -64,7 +64,8 @@ script.sort((a, b) => a[0] - b[0]);
 const placeholders = [];
 for (const c of cuts) if (/仮素材/.test(c.what)) placeholders.push(`カット${c.n}（${f1(c.t0)}〜${f1(c.t1)}秒）: ${c.what.replace('　※仮素材', '')}${c.want ? ` → 本番で使いたいもの: ${c.want}` : ''}`);
 if (ep.style === 'explainer') placeholders.push('映像素材なし。全編、図と文字だけで作っている');
-if (ep.style === 'explainer' && !(ep.audio || []).length) placeholders.push('ナレーションの音声なし。画面の文字のタイミングは読む速さからの仮置き');
+if (ep.style === 'explainer' && !(ep.audio || []).length && !(ep.voice || []).length) placeholders.push('ナレーションの音声なし。画面の文字のタイミングは読む速さからの仮置き');
+if ((ep.voice || []).length) placeholders.push('ナレーションは仮の声（読み上げソフト Open JTalk の機械音声）。本人の声ではない。タイミングはこの声の長さに合わせてある');
 if (ep.style === 'drama' && !(ep.audio || []).length && ep.clips.every((c) => c.mute || /\.(jpe?g|png|webp)$/i.test(c.file))) placeholders.push('セリフの音声なし（字幕のみ）');
 const section = (md, title) => {
   const m = md.match(new RegExp(`## ${title}\\n([\\s\\S]*?)(\\n## |$)`));
@@ -82,7 +83,11 @@ L.push('## 添付画像の時点で画面に出ている文字');
 for (const t of [1, 3, 5].filter((x) => x < dur)) {
   // a line counts once it has faded in (about 0.15 s) and until it starts to fade out
   const on = script.filter(([t0, t1]) => t >= t0 + 0.15 && (t1 == null || t < t1 - 0.05)).map(([, , kind, text]) => `${kind}「${one(text)}」`);
-  L.push(`- ${t}.0秒: ${on.length ? on.join('、') : '文字なし（切り替わりの瞬間）'}`);
+  // lines still fading in or already fading out are named as such, so the image and the text agree
+  const coming = script.filter(([t0]) => t >= t0 - 0.05 && t < t0 + 0.15).map(([, , kind, text]) => `${kind}「${one(text)}」が出てくる途中`);
+  const going = script.filter(([, t1]) => t1 != null && t >= t1 - 0.05 && t < t1 + 0.25).map(([, , kind, text]) => `${kind}「${one(text)}」が消えていく途中`);
+  const all = [...on, ...coming, ...going];
+  L.push(`- ${t}.0秒: ${all.length ? all.join('、') : '文字なし（切り替わりの瞬間）'}`);
 }
 L.push('');
 L.push('## 台本（時刻順）');
@@ -92,7 +97,7 @@ if (cuts.length) {
   L.push('## カット（開始〜終了）');
   for (const c of cuts) {
     L.push(`- カット${c.n}: ${f1(c.t0)}〜${f1(c.t1)}秒`);
-    if (c.narration) L.push(`  - ナレーション（未録音）: ${c.narration}`);
+    if (c.narration) L.push(`  - ナレーション（${(ep.voice || []).length ? '仮の声・読み上げソフト' : '未録音'}）: ${c.narration}`);
     L.push(`  - 素材: ${c.what}`);
     if (c.role) L.push(`  - 役割: ${c.role}`);
   }
@@ -101,13 +106,13 @@ if (cuts.length) {
 L.push('## 仮素材・足りないもの');
 for (const p of placeholders.length ? placeholders : ['なし']) L.push(`- ${p}`);
 L.push('');
-L.push('## 確認できていない項目');
-const unchecked = section(brief, '未確認のこと');
+L.push('## 確認できていない項目（実際には聞いていない・見ていないもの）');
+const unchecked = section(brief, '未確認のこと') || section(brief, '実際には聞いていない・見ていない項目');
 L.push(unchecked || '- 音を耳で聞いた確認（BGM・効果音の大きさ、テンポ）\n- Instagram の実際の画面で、ボタンやキャプションと字幕が重ならないか\n- 投稿後の数字（視聴時間・保存・シェア）');
 L.push('');
 L.push('## 確認したこと（自動チェック）');
 for (const l of checked) L.push(`- ${l.replace(/^OK\s+/, 'OK: ').replace(/^WARNING\s+/, '要確認: ')}`);
-const done = section(brief, '確認したこと');
-if (done) L.push('', '## 確認したこと（目視）', done);
+const done = section(brief, '確認したこと') || section(brief, '技術的に確認した項目');
+if (done) L.push('', '## 確認したこと（技術的な確認と目視）', done);
 fs.writeFileSync(path.join(outDir, 'review.txt'), L.join('\n') + '\n');
 console.log('review pack:', outDir, frames.join(' '));

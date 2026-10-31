@@ -1,4 +1,6 @@
 # Synthesizes the reel soundtrack: a quiet lo-fi beat and pad, plus a sound for every chat event.
+# An explainer can carry narration: "voice": [{ "t": 0.3, "file": "voice/line01.wav" }] (mono WAV, path relative to the
+# JSON). The music drops while a line is spoken, and the voice-to-music level difference is printed.
 # For a drama episode (style "drama") it is the music bed named by "bgm" (pad, comedy or none), the end chime,
 # and the sound effect each subtitle names with "sfx" (see SFX below), played under the clips' own sound.
 #   python3 audio.py scene.json out.wav
@@ -92,6 +94,33 @@ while bgm in ('chat', 'pad') and c * 2 * bar < dur:
     pad = sum(np.sin(2 * np.pi * 440 * 2 ** ((m - 69) / 12) * t) for m in chords[c % 4]) * shape
     add(pad, c * 2 * bar, 0.05 if drama else 0.022)
     c += 1
+
+# narration: each line placed at its time; the music bed is lowered under it (15 dB, short ramps)
+import os
+voice = np.zeros_like(mix)
+spans = []
+for v in scene.get('voice', []):
+    with wave.open(os.path.join(os.path.dirname(os.path.abspath(sys.argv[1])), v['file'])) as w:
+        assert w.getframerate() == SR and w.getnchannels() == 1, 'narration must be mono 48 kHz WAV'
+        x = np.frombuffer(w.readframes(w.getnframes()), dtype=np.int16) / 32768.0
+    x = x / max(1e-6, np.max(np.abs(x))) * 0.9 * v.get('gain', 1)
+    i = int(v['t'] * SR)
+    n = min(len(x), len(voice) - i)
+    voice[i:i + n] += x[:n]
+    spans.append((v['t'], v['t'] + len(x) / SR))
+if spans:
+    duck = np.ones_like(mix)
+    ramp = int(0.15 * SR)
+    for a, b in spans:
+        i, j = int(a * SR), int(b * SR)
+        duck[max(0, i - ramp):j + ramp] = 10 ** (-15 / 20)
+    duck = np.convolve(duck, np.ones(ramp) / ramp, mode='same')
+    mix *= duck
+    rms = lambda x: 20 * np.log10(np.sqrt(np.mean(x ** 2)) + 1e-12)
+    under = np.concatenate([mix[int(a * SR):int(b * SR)] for a, b in spans])
+    spoken = np.concatenate([voice[int(a * SR):int(b * SR)] for a, b in spans])
+    print(f'voice {rms(spoken):.1f} dB, music under it {rms(under):.1f} dB, difference {rms(spoken) - rms(under):.1f} dB', file=sys.stderr)
+    mix += voice
 
 pop_l = tone(620, 480, 0.09, 0.03)
 pop_r = tone(880, 1180, 0.09, 0.03)
