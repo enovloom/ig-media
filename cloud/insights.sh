@@ -26,7 +26,9 @@ get() {
 get "$ig" --data-urlencode 'fields=username,name,biography,website,followers_count,follows_count,media_count' > "$out/account.json"
 
 # which permissions the token carries and when it expires (a token can inspect itself)
-get "debug_token" --data-urlencode "input_token=$IG_PAGE_TOKEN" | jq 'if .data then .data | del(.app_id, .user_id, .profile_id) else . end' > "$out/token.json"
+get "debug_token" --data-urlencode "input_token=$IG_PAGE_TOKEN" | jq 'if .data then .data | del(.user_id, .profile_id) else . end' > "$out/token.json"
+# the app ID is public (it appears in every login URL); printing it tells apart apps that share a name
+echo "token app: $(jq -r '.app_id // "?"' "$out/token.json") ($(jq -r '.application // "?"' "$out/token.json"))"
 
 # every post on the account, not only the ones autopost made
 get "$ig/media" --data-urlencode 'fields=id,caption,media_type,media_product_type,timestamp,permalink,like_count,comments_count,thumbnail_url' --data-urlencode 'limit=100' > "$out/media.json"
