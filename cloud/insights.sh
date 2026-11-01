@@ -18,11 +18,15 @@ get() {
   if ! jq -e . >/dev/null 2>&1 <<<"$body"; then body=$(jq -n --arg raw "$body" '{error:{message:$raw}}'); fi
   if jq -e '.error' >/dev/null <<<"$body"; then status=error; fi
   # runs inside $(...) too, so keep the tally in a file rather than a variable
-  printf '%s\t%s\t%s\n' "$status" "$path" "$*" >> "$out/calls.log"
+  local args="$*"
+  printf '%s\t%s\t%s\n' "$status" "$path" "${args//$IG_PAGE_TOKEN/[token]}" >> "$out/calls.log"
   printf '%s' "$body"
 }
 
 get "$ig" --data-urlencode 'fields=username,name,biography,website,followers_count,follows_count,media_count' > "$out/account.json"
+
+# which permissions the token carries and when it expires (a token can inspect itself)
+get "debug_token" --data-urlencode "input_token=$IG_PAGE_TOKEN" | jq 'if .data then .data | del(.app_id, .user_id, .profile_id) else . end' > "$out/token.json"
 
 # every post on the account, not only the ones autopost made
 get "$ig/media" --data-urlencode 'fields=id,caption,media_type,media_product_type,timestamp,permalink,like_count,comments_count,thumbnail_url' --data-urlencode 'limit=100' > "$out/media.json"
