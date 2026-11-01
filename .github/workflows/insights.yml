@@ -25,7 +25,9 @@ jobs:
           filter: blob:none
       - name: Fetch insights
         env:
-          IG_PAGE_TOKEN: ${{ secrets.IG_PAGE_TOKEN }}
+          # a separate short-lived token for analysis wins when present, so autopost's token never has to change
+          IG_PAGE_TOKEN: ${{ secrets.IG_INSIGHTS_TOKEN || secrets.IG_PAGE_TOKEN }}
+          TOKEN_SOURCE: ${{ secrets.IG_INSIGHTS_TOKEN && 'IG_INSIGHTS_TOKEN' || 'IG_PAGE_TOKEN' }}
         run: bash cloud/insights.sh
       - name: Save encrypted results
         run: |

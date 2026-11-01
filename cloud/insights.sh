@@ -82,8 +82,8 @@ since=$(date -u -d '2026-10-28' +%s)
 } > "$out/account_range.json"
 
 calls=$(wc -l < "$out/calls.log"); errors=$(grep -c '^error' "$out/calls.log")
-jq -n --arg at "$(date -u +%FT%TZ)" --argjson calls "$calls" --argjson errors "$errors" '{fetchedAt:$at, calls:$calls, errors:$errors}' > "$out/meta.json"
-echo "calls=$calls errors=$errors (details are inside the encrypted bundle)"
+jq -n --arg at "$(date -u +%FT%TZ)" --arg src "${TOKEN_SOURCE:-IG_PAGE_TOKEN}" --argjson calls "$calls" --argjson errors "$errors" '{fetchedAt:$at, token:$src, calls:$calls, errors:$errors}' > "$out/meta.json"
+echo "token=${TOKEN_SOURCE:-IG_PAGE_TOKEN} calls=$calls errors=$errors (details are inside the encrypted bundle)"
 
 # encrypt: random AES key, sealed with the RSA public key; the workflow commits the result
 tar czf "$out.tgz" -C "$out" .
