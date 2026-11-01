@@ -81,11 +81,11 @@ calls=$(wc -l < "$out/calls.log"); errors=$(grep -c '^error' "$out/calls.log")
 jq -n --arg at "$(date -u +%FT%TZ)" --argjson calls "$calls" --argjson errors "$errors" '{fetchedAt:$at, calls:$calls, errors:$errors}' > "$out/meta.json"
 echo "calls=$calls errors=$errors (details are inside the encrypted bundle)"
 
-# encrypt: random AES key, sealed with the RSA public key
+# encrypt: random AES key, sealed with the RSA public key; the workflow commits the result
 tar czf "$out.tgz" -C "$out" .
 key=$(openssl rand -hex 32)
-openssl enc -aes-256-cbc -pbkdf2 -salt -in "$out.tgz" -out "$out.enc" -pass "pass:$key"
-printf '%s' "$key" | openssl pkeyutl -encrypt -pubin -inkey cloud/insights.pub.pem -pkeyopt rsa_padding_mode:oaep > "$out.key"
-echo "===KEY==="; base64 -w 0 "$out.key"; echo
-echo "===DATA==="; base64 -w 3000 "$out.enc"; echo
-echo "===END==="
+mkdir -p insights
+openssl enc -aes-256-cbc -pbkdf2 -salt -in "$out.tgz" -out insights/latest.enc -pass "pass:$key"
+printf '%s' "$key" | openssl pkeyutl -encrypt -pubin -inkey cloud/insights.pub.pem -pkeyopt rsa_padding_mode:oaep > insights/latest.key
+# error messages only (no numbers), to make failed calls easy to spot in the public log
+grep '^error' "$out/calls.log" | cut -f2- | sed -E 's/[0-9]{15,}/ID/g; s/(since|until)=[0-9]+/\1=T/g' | sort | uniq -c | sort -rn | head -40
