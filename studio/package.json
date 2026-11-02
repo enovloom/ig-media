@@ -1,0 +1,14 @@
+{
+  "name": "ig-media-studio",
+  "private": true,
+  "description": "Renders chat-style reels from queue/<id>/scenes.json",
+  "type": "module",
+  "scripts": {
+    "check": "node check.mjs",
+    "render": "node render.mjs",
+    "render-queue": "node render-queue.mjs"
+  },
+  "dependencies": {
+    "playwright": "1.63.0"
+  }
+}
