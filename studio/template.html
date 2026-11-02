@@ -20,7 +20,7 @@
   #glow { position: absolute; left: -260px; top: 120px; width: 1000px; height: 1000px;
     background: radial-gradient(circle, rgba(255,255,255,.10), rgba(255,255,255,0) 62%); }
   #brand { position: absolute; left: 72px; top: 262px; font-size: 30px; font-weight: 700; opacity: .85; }
-  #hook { position: absolute; left: 72px; top: 312px; width: 900px; font-weight: 900; line-height: 1.24; }
+  #hook { position: absolute; left: 72px; top: 312px; width: 900px; font-weight: 900; line-height: 1.24; white-space: nowrap; }
   .hl { background: #ffe14d; color: #1f1a3a; padding: 0 12px; border-radius: 8px;
     -webkit-box-decoration-break: clone; box-decoration-break: clone; }
   #card { position: absolute; left: 60px; top: 600px; width: 860px; height: 760px; background: #dde5ee;
@@ -73,7 +73,7 @@
 (() => {
   const items = [];        // { node, start, end, kind, stream }
   const events = [];       // sound cues for render.mjs
-  let tFix = 0, tOutro = 0, total = 0;
+  let tFix = 0, tOutro = 0, total = 0, cardTop = 600, cardMax = 820;
   const POP = 0.22, FADE = 0.35;
 
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -112,8 +112,13 @@
     document.getElementById('brand').textContent = spec.brand || '';
     const hook = document.getElementById('hook');
     const hookW = Math.max(...spec.hook.map(width));
-    hook.style.fontSize = Math.min(82, Math.floor(900 / hookW)) + 'px';
+    // leave room for the highlight padding so a line never wraps
+    hook.style.fontSize = Math.min(82, Math.floor(856 / hookW)) + 'px';
     hook.innerHTML = spec.hook.map(hl).join('<br>');
+    // the card starts right under the headline and may grow until the caption overlay (y = 1430)
+    cardTop = Math.max(560, Math.ceil(hook.offsetTop + hook.offsetHeight + 44));
+    cardMax = 1430 - cardTop;
+    document.getElementById('card').style.top = cardTop + 'px';
     document.getElementById('title').textContent = spec.chat.title;
     document.getElementById('note').textContent = spec.note ?? '※よくある場面をもとにした会話例です';
     const avatarText = spec.chat.avatar || [...plain(spec.chat.title)][0] || '';
@@ -207,9 +212,9 @@
     // and once it is full the newest line stays in view
     const s1 = document.getElementById('s1'), s2 = document.getElementById('s2');
     const content = Math.max(p1 > 0 ? s1.scrollHeight : 0, p2 > 0 ? s2.scrollHeight : 0);
-    const cardH = Math.max(420, Math.min(760, 96 + content + 6));
+    const cardH = Math.max(420, Math.min(cardMax, 96 + content + 6));
     document.getElementById('card').style.height = cardH + 'px';
-    document.getElementById('note').style.top = (600 + cardH + 20) + 'px';
+    document.getElementById('note').style.top = (cardTop + cardH + 20) + 'px';
     for (const s of [s1, s2]) s.style.transform = `translateY(${-Math.max(0, s.scrollHeight - (cardH - 96 - 6))}px)`;
     // identical keys mean identical frames, so render.mjs can reuse the last screenshot
     return moving ? 't' + t : 'v' + vis.join(',') + (t >= tOutro ? 'o' : '');

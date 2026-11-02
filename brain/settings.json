@@ -1,7 +1,12 @@
 {
   "paused": false,
-  "postsPerDay": 2,
-  "slots": ["12:00", "21:00"],
+  "postsPerDay": 4,
+  "slots": [
+    "07:30",
+    "12:00",
+    "18:00",
+    "21:00"
+  ],
   "planDaysAhead": 1,
   "minHoursBeforePublish": 6,
   "touchManualPosts": false,

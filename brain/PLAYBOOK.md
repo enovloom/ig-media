@@ -43,7 +43,7 @@
 
 1. 予約を作る日と枠を決める:
    - 今日から `planDaysAhead` 日先まで、`slots` の時刻のうち、まだ予約が無い枠
-   - 1 日の本数は `postsPerDay` まで（手で作った予約も数に含める）
+   - 1 日の本数は `postsPerDay` まで（手で作った予約も数に含める。`approved` も `autoApprove` も `false` の保留中のものは数えない）
    - 今から `minHoursBeforePublish` 時間以内の枠には作らない
    - `touchManualPosts` が `false` なら、人が作った予約（`post.json` に `brain` が無いもの）は変えない
 2. 話題を選ぶ: `brain/ideas.md` のネタ帳と学びから選ぶ。直近 14 日の投稿（`queue/` のキャプションと台本）と話題が重ならないようにする。使ったネタは `ideas.md` で「使用済み（日付）」にし、思いついたネタは書き足す。
