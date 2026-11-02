@@ -49,9 +49,10 @@ def main():
     for m in media:
         i = ins.get(m["id"], {})
         qid = by_media.get(m["id"], "")
-        post = load(os.path.join(queue, qid, "post.json"), {}) if qid else {}
-        scenes = load(os.path.join(queue, qid, "scenes.json"), None) if qid else None
-        render = load(os.path.join(queue, qid, "render.json"), {}) if qid else {}
+        qdir = next((d for d in (os.path.join(a.repo, "auto", "queue", qid), os.path.join(queue, qid)) if qid and os.path.isdir(d)), "")
+        post = load(os.path.join(qdir, "post.json"), {}) if qdir else {}
+        scenes = load(os.path.join(qdir, "scenes.json"), None) if qdir else None
+        render = load(os.path.join(qdir, "render.json"), {}) if qdir else {}
         brain = post.get("brain", {}) if post else {}
         posted = datetime.strptime(m["timestamp"], "%Y-%m-%dT%H:%M:%S%z")
         hook = " / ".join(x.replace("*", "") for x in scenes["hook"]) if scenes else (m.get("caption") or "").split("\n")[0][:40]

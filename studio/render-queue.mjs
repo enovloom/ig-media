@@ -1,6 +1,7 @@
 // Renders every queued post that has a script (scenes.json) but no up-to-date video.
 //   node studio/render-queue.mjs        (run from the repository root)
-// For each one it writes media/<id>/video.mp4, records queue/<id>/render.json, sets the
+// Looks in queue/ (videos go to media/) and auto/queue/ (videos go to auto/media/).
+// For each one it writes <media>/<id>/video.mp4, records <queue>/<id>/render.json, sets the
 // cover frame in post.json, and approves the post if it asked for that with "autoApprove".
 // Posts that are already published are left alone.
 import { execFileSync } from 'node:child_process';
@@ -10,20 +11,23 @@ import path from 'node:path';
 
 const root = process.cwd();
 const studio = path.join(root, 'studio');
-const queue = path.join(root, 'queue');
 const read = f => fs.readFileSync(f, 'utf8');
-const state = fs.existsSync(path.join(queue, 'state.json')) ? JSON.parse(read(path.join(queue, 'state.json')).replace(/^﻿/, '')) : {};
+const stateFile = path.join(root, 'queue', 'state.json');
+const state = fs.existsSync(stateFile) ? JSON.parse(read(stateFile).replace(/^\uFEFF/, '')) : {};
+const roots = [['queue', 'media'], ['auto/queue', 'auto/media']]
+  .map(([q, m]) => ({ queue: path.join(root, q), media: path.join(root, m) }))
+  .filter(r => fs.existsSync(r.queue));
 const engine = ['template.html', 'render.mjs', 'spec.mjs'].map(f => read(path.join(studio, f))).join('\n');
 
 const rendered = [], failed = [];
-for (const id of fs.readdirSync(queue).sort()) {
+for (const { queue, media } of roots) for (const id of fs.readdirSync(queue).sort()) {
   const dir = path.join(queue, id), scenes = path.join(dir, 'scenes.json');
   if (!fs.existsSync(scenes)) continue;
   if (['published', 'publishing'].includes(state[id]?.status)) continue;
   const hash = crypto.createHash('sha256').update(read(scenes) + engine).digest('hex').slice(0, 16);
   const recordFile = path.join(dir, 'render.json');
   const record = fs.existsSync(recordFile) ? JSON.parse(read(recordFile)) : {};
-  const video = path.join(root, 'media', id, 'video.mp4');
+  const video = path.join(media, id, 'video.mp4');
   if (record.hash === hash && !record.error && fs.existsSync(video)) continue;
 
   console.log(`rendering ${id}`);

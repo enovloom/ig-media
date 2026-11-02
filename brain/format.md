@@ -1,10 +1,12 @@
 # 予約投稿の作り方（自動・手動どちらも同じ）
 
-1 本の投稿 = `queue/<日時>_<短い名前>/` のフォルダ 1 つ。例: `queue/2026-11-05-2100_kotowarareta/`
+1 本の投稿 = `auto/queue/<日時>_studio_<短い名前>/` のフォルダ 1 つ。例: `auto/queue/2026-11-05-2100_studio_kotowarareta/`
+
+（`queue/` は PC から同期される場所なので、ここには作らない。PC 由来の予約を止めるときは `auto/hold.json` にフォルダ名を書く）
 
 | ファイル | 中身 |
 |---|---|
-| `scenes.json` | 動画の台本。GitHub に入ると自動で動画になる（`media/<同じ名前>/video.mp4`） |
+| `scenes.json` | 動画の台本。GitHub に入ると自動で動画になる（`auto/media/<同じ名前>/video.mp4`） |
 | `caption.txt` | キャプション |
 | `post.json` | 投稿の設定 |
 | `render.json` | 動画を作った記録（自動で作られる。触らない） |
@@ -71,5 +73,5 @@
 - `who`: `me` = 店長（右・オレンジ）、`them` = 相手（左・白）、`divider` = 「次の日」などの区切り
 - 吹き出しは 1 行 15 文字・4 行まで。`\n` で改行
 - `outro`: 最後のまとめ。`title` は 1 行 12 文字まで
-- 確認コマンド: `node studio/check.mjs queue/<フォルダ>/scenes.json`
-- 試しに動画にする: `node studio/render.mjs queue/<フォルダ>/scenes.json /tmp/test.mp4`
+- 確認コマンド: `node studio/check.mjs auto/queue/<フォルダ>/scenes.json`
+- 試しに動画にする: `node studio/render.mjs auto/queue/<フォルダ>/scenes.json /tmp/test.mp4`

@@ -1,0 +1,32 @@
+name: autopost-check
+
+# Dry run of cloud/publish.ps1: parses the script and lists which posts it would publish,
+# hold or skip. It makes no Instagram calls and changes nothing.
+on:
+  push:
+    branches: [main]
+    paths: ['cloud/publish.ps1', 'auto/hold.json', 'auto/queue/**/post.json', '.github/workflows/autopost-check.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            cloud
+            queue
+            auto/queue
+            auto/hold.json
+          sparse-checkout-cone-mode: false
+          filter: blob:none
+      - name: Dry run
+        shell: pwsh
+        env:
+          AUTOPOST_DRY_RUN: '1'
+        run: ./cloud/publish.ps1

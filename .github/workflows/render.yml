@@ -6,7 +6,7 @@ name: render
 on:
   push:
     branches: [main]
-    paths: ['queue/**/scenes.json', 'studio/**']
+    paths: ['queue/**/scenes.json', 'auto/queue/**/scenes.json', 'studio/**']
   workflow_dispatch:
 
 permissions:
@@ -26,6 +26,7 @@ jobs:
           # the existing videos are not needed to make new ones
           sparse-checkout: |
             queue
+            auto/queue
             studio
           filter: blob:none
       - uses: actions/setup-node@v4
@@ -45,7 +46,7 @@ jobs:
           git config user.email "349601991+enovloom@users.noreply.github.com"
           # media/ only exists here when something was rendered
           git add --sparse queue
-          if [ -d media ]; then git add --sparse media; fi
+          for d in media auto/queue auto/media; do if [ -d "$d" ]; then git add --sparse "$d"; fi; done
           if git diff --cached --quiet; then echo "nothing new"; exit 0; fi
           git commit -m "render: new reels"
           for i in 1 2 3 4; do git pull --rebase origin main && git push && exit 0; sleep $((i * 5)); done

@@ -6,7 +6,9 @@
 ## 置き場所
 | 場所 | 公開 | 中身 |
 |---|---|---|
-| `enovloom/ig-media` | 公開 | 予約投稿（`queue/`）、動画（`media/`）、動画の生成（`studio/`）、この手順書とルール（`brain/`）、暗号化した数字（`insights/`） |
+| `enovloom/ig-media` | 公開 | 頭脳が作る予約（`auto/queue/`）と動画（`auto/media/`）、保留リスト（`auto/hold.json`）、PC から同期される予約（`queue/`・`media/`）、動画の生成（`studio/`）、この手順書とルール（`brain/`）、暗号化した数字（`insights/`） |
+
+**`queue/` と `media/` はオーナーの PC から同期され、PC にないファイルは消され、変更は元に戻される。** 頭脳は `queue/` に書き込まない。自分の予約は必ず `auto/queue/` に作り、PC 由来の予約を止めたいときは `auto/hold.json` の `hold` にフォルダ名を足す。
 | `enovloom/notes` | **非公開であること** | 復号の鍵（`brain/keys/insights.pem`）、数字の履歴、学び、実験の記録、日報 |
 
 `notes` が公開になっていたら、数字・鍵・日報は書かずに日報の冒頭で知らせて、そこで止まる。
@@ -20,7 +22,8 @@
 1. `bash brain/tools/decrypt.sh <notesの>/brain/keys/insights.pem /tmp/ins` で最新の数字を開く。
    - 取得から 30 時間以上たっていたら、GitHub の `insights` ワークフローを `workflow_dispatch` で動かし、数分待ってから `git pull` してやり直す。
 2. `python3 brain/tools/snapshot.py --data /tmp/ins --repo . --csv <notes>/brain/metrics/posts.csv --json /tmp/rows.json` で表を作り、履歴に追記する。
-3. `queue/state.json` と各 `queue/*/render.json` を見て、前日に作った投稿が動画になり、投稿されたかを確かめる。失敗していたら原因を直す（台本の修正など）。
+3. `queue/state.json` と各 `auto/queue/*/render.json` を見て、前日に作った投稿が動画になり、投稿されたかを確かめる。失敗していたら原因を直す（台本の修正など）。
+   - `auto/queue/` にあったはずの予約が消えていたり、`auto/hold.json` が元に戻っていたりしたら、PC の同期が `auto/` まで触り始めた可能性がある。日報の「要対応」に書く
 4. 健康チェック。当てはまるものがあれば、日報の**いちばん上**に「要対応」として書く:
    - `/tmp/ins/token.json` の `data_access_expires_at` まで 21 日を切った → Instagram のトークンの作り直しが必要（手順は `brain/README.md` の「トークンの作り直し」）
    - `token.json` の `is_valid` が false、または `meta.json` の `errors` が全体の半分以上 → トークンか権限の問題
@@ -48,20 +51,21 @@
 
 1. 予約を作る日と枠を決める:
    - 今日から `planDaysAhead` 日先まで、`slots` の時刻のうち、まだ予約が無い枠
-   - 1 日の本数は `postsPerDay` まで（手で作った予約も数に含める。`approved` も `autoApprove` も `false` の保留中のものは数えない）
+   - 1 日の本数は `postsPerDay` まで（`queue/` の PC 由来の予約も数に含める。`auto/hold.json` に入っているもの、`approved` も `autoApprove` も `false` のものは数えない）
+   - `touchManualPosts` が `true` のときに限り、上限を超える PC 由来の予約（投稿前のもの）を `auto/hold.json` に足して止めてよい
    - 今から `minHoursBeforePublish` 時間以内の枠には作らない
    - `touchManualPosts` が `false` なら、人が作った予約（`post.json` に `brain` が無いもの）は変えない
-2. 話題を選ぶ: `brain/ideas.md` のネタ帳と学びから選ぶ。直近 14 日の投稿（`queue/` のキャプションと台本）と話題が重ならないようにする。使ったネタは `ideas.md` で「使用済み（日付）」にし、思いついたネタは書き足す。
-3. 1 本ごとに `queue/<YYYY-MM-DD-HHMM>_<ローマ字の短い名前>/` を作り、`scenes.json`・`caption.txt`・`post.json` を `brain/format.md` どおりに書く。
+2. 話題を選ぶ: `brain/ideas.md` のネタ帳と学びから選ぶ。直近 14 日の投稿（`queue/` と `auto/queue/` のキャプションと台本）と話題が重ならないようにする。使ったネタは `ideas.md` で「使用済み（日付）」にし、思いついたネタは書き足す。
+3. 1 本ごとに `auto/queue/<YYYY-MM-DD-HHMM>_studio_<ローマ字の短い名前>/` を作り、`scenes.json`・`caption.txt`・`post.json` を `brain/format.md` どおりに書く。
    - `post.json` は `"approved": false, "autoApprove": true` にする。`brain` に theme・hookType・experiment・variant・hypothesis を必ず入れる
    - `brain/brand.md` のルールを守る（使ってよい事実以外の実績・数字を作らない、など）
 4. 確かめる:
-   - `node studio/check.mjs queue/<フォルダ>/scenes.json` が OK になるまで直す
-   - `node studio/render.mjs queue/<フォルダ>/scenes.json /tmp/<フォルダ>.mp4` で試しに動画にして、0 秒・1.6 秒・中盤・最後の画面を画像で見る。文字のはみ出し、読みにくさ、不自然な日本語があれば直す。この試しの動画はコミットしない（本番の動画は GitHub が作る）
+   - `node studio/check.mjs auto/queue/<フォルダ>/scenes.json` が OK になるまで直す
+   - `node studio/render.mjs auto/queue/<フォルダ>/scenes.json /tmp/<フォルダ>.mp4` で試しに動画にして、0 秒・1.6 秒・中盤・最後の画面を画像で見る。文字のはみ出し、読みにくさ、不自然な日本語があれば直す。この試しの動画はコミットしない（本番の動画は GitHub が作る）
    - キャプションを声に出したつもりで読み、不自然な所を直す
 
 ## 5. 保存する
-1. `ig-media`: 新しい `queue/` のフォルダと、変えた `brain/ideas.md` などを `main` にコミットしてプッシュする（プッシュで動画づくりが自動で始まる）。プッシュが失敗したら `git pull --rebase` してやり直す。
+1. `ig-media`: 新しい `auto/queue/` のフォルダと、変えた `auto/hold.json`・`brain/ideas.md` などを `main` にコミットしてプッシュする（プッシュで動画づくりが自動で始まる）。プッシュが失敗したら `git pull --rebase` してやり直す。
 2. `notes`: `brain/metrics/`・`learnings.md`・`experiments.md`・日報をコミットしてプッシュする。
 
 ## 6. 日報を書く
@@ -89,7 +93,7 @@
 
 ## やってはいけないこと
 - 投稿済み・投稿中の予約（`state.json` が published / publishing）を触る
-- `queue/state.json`・`cloud/`・`.github/` を変える（仕組みの修正が必要なら、日報で提案するだけにする）
+- `queue/`（`state.json` を含む）・`media/`・`cloud/`・`.github/` を変える（仕組みの修正が必要なら、日報で提案するだけにする）
 - 鍵や数字を公開リポジトリ（`ig-media`）に置く
 - 1 日の上限を超えて予約する
 - `brain/brand.md` の「やらないこと」を破る

@@ -8,7 +8,7 @@
  06:10  頭脳が考える（Claude Code の定期タスク）
           測る → 分析 → 課題をしぼる → 仮説 → 台本とキャプションを書く → 予約に入れる → 日報
    ↓
- すぐ  動画を作る（GitHub Actions: render）… scenes.json から media/…/video.mp4
+ すぐ  動画を作る（GitHub Actions: render）… scenes.json から auto/media/…/video.mp4
    ↓
  予約時刻  投稿する（GitHub Actions: autopost）
    ↓
@@ -23,8 +23,10 @@
 | 1日の本数・時刻を変える | `brain/settings.json` の `postsPerDay`・`slots` |
 | 話し方・ルールを変える | `brain/brand.md` |
 | ネタを足す | `brain/ideas.md` |
-| 予約中の投稿を直す | `queue/<フォルダ>/scenes.json`（動画が自動で作り直される）・`caption.txt` |
-| 予約中の投稿を止める | `queue/<フォルダ>/post.json` の `"approved"` を `false`、`"autoApprove"` も `false` |
+| 予約中の投稿を直す | `auto/queue/<フォルダ>/scenes.json`（動画が自動で作り直される）・`caption.txt` |
+| 予約中の投稿を止める | `auto/hold.json` の `hold` にフォルダ名を足す（`queue/` と `auto/queue/` のどちらでも効く） |
+
+`queue/` と `media/` はPCから同期される場所です。PCにないファイルは消されるので、自動で作る予約は `auto/` に置いています。
 | 頭脳の動き方を変える | `brain/PLAYBOOK.md` |
 
 ## 中身

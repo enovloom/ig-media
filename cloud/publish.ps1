@@ -1,12 +1,16 @@
-# Runs on GitHub Actions (PowerShell 7). Publishes approved posts in queue/ when they are due,
+# Runs on GitHub Actions (PowerShell 7). Publishes approved posts when they are due,
 # and records the result in queue/state.json. The workflow commits that file back to the repo.
+# Posts come from two places: queue/ (synced from the owner's PC, videos in media/) and
+# auto/queue/ (made by the daily planning loop, videos in auto/media/). Ids listed in
+# auto/hold.json are skipped. With AUTOPOST_DRY_RUN set, it only lists what it would do.
 # Secret: IG_PAGE_TOKEN (Facebook Page token linked to the Instagram account).
 $ErrorActionPreference = 'Stop'
+$dry = [bool]$env:AUTOPOST_DRY_RUN
 $repo  = Split-Path $PSScriptRoot -Parent
 $cfg   = Get-Content (Join-Path $PSScriptRoot 'config.json') -Raw | ConvertFrom-Json
 $api   = "https://graph.facebook.com/$($cfg.apiVersion)"
 $token = $env:IG_PAGE_TOKEN
-if (-not $token) { throw 'IG_PAGE_TOKEN secret is not set' }
+if (-not $token -and -not $dry) { throw 'IG_PAGE_TOKEN secret is not set' }
 $headers = @{ Authorization = "Bearer $token" }
 $queue = Join-Path $repo 'queue'
 $stateFile = Join-Path $queue 'state.json'
@@ -38,14 +42,30 @@ function Wait-Url([string]$url) {
   throw "media URL not reachable: $url"
 }
 
-$me = IG GET "$($cfg.igUserId)?fields=username"
-Log "account @$($me.username)"
+if (-not $dry) {
+  $me = IG GET "$($cfg.igUserId)?fields=username"
+  Log "account @$($me.username)"
+}
 if (-not (Test-Path $queue)) { New-Item -ItemType Directory $queue | Out-Null }
 $failed = $false
 
-foreach ($dir in Get-ChildItem $queue -Directory | Sort-Object Name) {
+$holdFile = Join-Path $repo 'auto/hold.json'
+$hold = @(if (Test-Path $holdFile) { (Get-Content $holdFile -Raw | ConvertFrom-Json).hold })
+$roots = @(
+  @{ dir = $queue; media = 'media' },
+  @{ dir = (Join-Path $repo 'auto/queue'); media = 'auto/media' }
+)
+$items = foreach ($r in $roots) {
+  if (Test-Path $r.dir) { Get-ChildItem $r.dir -Directory | ForEach-Object { [pscustomobject]@{ Dir = $_; Media = $r.media } } }
+}
+
+foreach ($item in ($items | Sort-Object { $_.Dir.Name })) {
+  $dir = $item.Dir
   $id = $dir.Name
-  $p = Get-Content (Join-Path $dir.FullName 'post.json') -Raw | ConvertFrom-Json
+  $postFile = Join-Path $dir.FullName 'post.json'
+  if (-not (Test-Path $postFile)) { continue }
+  if ($hold -contains $id) { if ($dry) { Log "$($id): held" }; continue }
+  $p = Get-Content $postFile -Raw | ConvertFrom-Json
   if (-not $p.approved) { continue }
   # pwsh 7 turns ISO strings into DateTime while parsing JSON, so accept either form
   $at = if ($p.publishAt -is [datetime]) { [DateTimeOffset]$p.publishAt } else { [DateTimeOffset]::Parse([string]$p.publishAt) }
@@ -54,6 +74,7 @@ foreach ($dir in Get-ChildItem $queue -Directory | Sort-Object Name) {
   if ($e -and $e.status -in @('published', 'publishing', 'missed', 'failed')) {
     if (-not ($e.status -eq 'missed' -and $e.scheduledFor -ne $slot)) { continue }
   }
+  if ($dry) { Log ("{0}: {1} at {2:yyyy-MM-dd HH:mm} JST from {3}" -f $id, $(if ($at -gt $now) { 'scheduled' } else { 'due now' }), $at.ToOffset([TimeSpan]::FromHours(9)), $item.Media); continue }
   if ($at -gt $now) { continue }
   if (-not $e) { $e = @{ attempts = 0 }; $state[$id] = $e }
   if ($now - $at -gt $late) { $e.status = 'missed'; $e.scheduledFor = $slot; Save-State; Log "$($id): missed (more than $($cfg.lateLimitHours)h late)"; $failed = $true; continue }
@@ -61,7 +82,7 @@ foreach ($dir in Get-ChildItem $queue -Directory | Sort-Object Name) {
   try {
     $e.attempts = [int]$e.attempts + 1
     $caption = (Get-Content (Join-Path $dir.FullName $p.captionFile) -Raw).Trim()
-    $urls = @($p.media | ForEach-Object { "$($cfg.pagesBaseUrl.TrimEnd('/'))/media/$id/$_" })
+    $urls = @($p.media | ForEach-Object { "$($cfg.pagesBaseUrl.TrimEnd('/'))/$($item.Media)/$id/$_" })
     $urls | ForEach-Object { Wait-Url $_ }
     $ig = $cfg.igUserId
     if ($p.type -eq 'carousel') {
