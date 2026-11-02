@@ -1,0 +1,50 @@
+name: render
+
+# Turns queue/<id>/scenes.json scripts into videos (media/<id>/video.mp4).
+# Runs when a script or the renderer changes, so a script edited on GitHub (phone or PC)
+# is re-rendered on its own. Published posts are never re-rendered.
+on:
+  push:
+    branches: [main]
+    paths: ['queue/**/scenes.json', 'studio/**']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: render
+  cancel-in-progress: false
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # the existing videos are not needed to make new ones
+          sparse-checkout: |
+            queue
+            studio
+          filter: blob:none
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install renderer
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-noto-color-emoji
+          cd studio && npm install --no-audit --no-fund && npx playwright install --with-deps chromium
+      - name: Render new scripts
+        run: node studio/render-queue.mjs
+      - name: Save videos
+        if: always()
+        run: |
+          git config user.name "enovloom"
+          git config user.email "349601991+enovloom@users.noreply.github.com"
+          git add --sparse media queue
+          if git diff --cached --quiet; then echo "nothing new"; exit 0; fi
+          git commit -m "render: new reels"
+          for i in 1 2 3 4; do git pull --rebase origin main && git push && exit 0; sleep $((i * 5)); done
+          exit 1

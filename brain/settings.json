@@ -1,0 +1,16 @@
+{
+  "paused": false,
+  "postsPerDay": 2,
+  "slots": ["12:00", "21:00"],
+  "planDaysAhead": 1,
+  "minHoursBeforePublish": 6,
+  "touchManualPosts": false,
+  "notes": {
+    "paused": "true にすると、分析とレポートだけして新しい投稿は作らない",
+    "postsPerDay": "1日に予約する本数の上限（手で作った予約も数に含める）",
+    "slots": "投稿する時刻（日本時間）",
+    "planDaysAhead": "何日先まで予約を作るか",
+    "minHoursBeforePublish": "動画づくりとページ公開の時間を見て、これより近い時刻には予約しない",
+    "touchManualPosts": "true にすると、上限を超える手作りの予約（まだ投稿前のもの）を未承認に戻してよい"
+  }
+}

@@ -1,15 +1,22 @@
 name: insights
 
-# Read-only: collects account and post numbers for analysis. Results are printed
-# encrypted (see cloud/insights.sh), because this repository and its logs are public.
+# Read-only: collects account and post numbers once a day for the analysis loop.
+# Results are encrypted (see cloud/insights.sh), because this repository and its logs are public.
 on:
+  schedule:
+    # 04:40 JST, before the daily planning session reads them
+    - cron: '40 19 * * *'
   push:
-    branches: [claude/instagram-analysis-fmnhog]
+    branches: [main]
     paths: ['cloud/insights.sh', 'cloud/insights.pub.pem', 'cloud/insights.run', '.github/workflows/insights.yml']
   workflow_dispatch:
 
 permissions:
   contents: write
+
+concurrency:
+  group: insights
+  cancel-in-progress: false
 
 jobs:
   fetch:
@@ -25,14 +32,17 @@ jobs:
           filter: blob:none
       - name: Fetch insights
         env:
-          # IG_PAGE_TOKEN carries instagram_manage_insights since 2026-11-02
           IG_PAGE_TOKEN: ${{ secrets.IG_PAGE_TOKEN }}
         run: bash cloud/insights.sh
       - name: Save encrypted results
         run: |
+          day=$(TZ=Asia/Tokyo date +%F)
+          mkdir -p insights/history
+          cp insights/latest.enc "insights/history/$day.enc"
+          cp insights/latest.key "insights/history/$day.key"
           git config user.name "enovloom"
           git config user.email "349601991+enovloom@users.noreply.github.com"
-          git add insights/latest.enc insights/latest.key
-          git commit -m "insights: encrypted results"
-          git pull --rebase origin "$GITHUB_REF_NAME"
-          git push origin "HEAD:$GITHUB_REF_NAME"
+          git add --sparse insights
+          git commit -m "insights: encrypted results $day"
+          for i in 1 2 3 4; do git pull --rebase origin "$GITHUB_REF_NAME" && git push origin "HEAD:$GITHUB_REF_NAME" && exit 0; sleep $((i * 5)); done
+          exit 1
