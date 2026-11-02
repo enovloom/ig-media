@@ -21,6 +21,11 @@
    - 取得から 30 時間以上たっていたら、GitHub の `insights` ワークフローを `workflow_dispatch` で動かし、数分待ってから `git pull` してやり直す。
 2. `python3 brain/tools/snapshot.py --data /tmp/ins --repo . --csv <notes>/brain/metrics/posts.csv --json /tmp/rows.json` で表を作り、履歴に追記する。
 3. `queue/state.json` と各 `queue/*/render.json` を見て、前日に作った投稿が動画になり、投稿されたかを確かめる。失敗していたら原因を直す（台本の修正など）。
+4. 健康チェック。当てはまるものがあれば、日報の**いちばん上**に「要対応」として書く:
+   - `/tmp/ins/token.json` の `data_access_expires_at` まで 21 日を切った → Instagram のトークンの作り直しが必要（手順は `brain/README.md` の「トークンの作り直し」）
+   - `token.json` の `is_valid` が false、または `meta.json` の `errors` が全体の半分以上 → トークンか権限の問題
+   - `state.json` に `failed` / `missed` がある、`render.json` に `error` がある → 投稿か動画づくりの失敗（直せるものは直す）
+   - 数字の取得が 2 日以上止まっている
 
 ## 2. 分析する
 - 見るのは**投稿から 24 時間以上たったもの**。それより新しいものは「途中経過」として扱う。
@@ -66,6 +71,13 @@
 3. 今日変えたこと・試すこと
 4. 予約した投稿（時刻・見出し・ねらい）
 5. 困っていること・人に判断してほしいこと（無ければ書かない）
+
+## 毎週月曜はまとめも書く
+月曜の回は、日報とは別に `notes` の `brain/reports/weekly-YYYY-MM-DD.md` に 1 週間のまとめを書く:
+1. 先週と比べた数字（再生の中央値、離脱、保存・シェア、フォロワー）
+2. 勝ちパターンと、やめたこと
+3. 判定した実験と、来週試すこと
+4. ブランド・ルール・設定について、人に提案したいこと（あれば）
 
 ## やってはいけないこと
 - 投稿済み・投稿中の予約（`state.json` が published / publishing）を触る

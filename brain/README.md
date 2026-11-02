@@ -35,3 +35,11 @@
 - `brain/tools/` … 数字の復号と集計
 - `studio/` … 台本から動画を作るしくみ
 - `cloud/` … 投稿と数字の取得
+
+## トークンの作り直し（およそ 90 日に 1 回）
+Instagram のトークンは、Meta の「データアクセスの期限」（今は 2027-01-31 ごろ）を過ぎると止まります。期限の 3 週間前になると、日報のいちばん上で知らせます。
+1. https://developers.facebook.com/tools/explorer/ で Meta App「enovloom autopost」（App ID `2087779492103579`）を選ぶ
+2. Permissions に `pages_show_list` `business_management` `instagram_basic` `instagram_content_publish` `pages_read_engagement` `instagram_manage_insights` を入れて「Generate Access Token」
+3. https://developers.facebook.com/tools/debug/accesstoken/ に貼って「アクセストークンを延長」
+4. Explorer に延長したトークンを入れて `me/accounts` を実行し、ページの `access_token`（EAA…）をコピー
+5. https://github.com/enovloom/ig-media/settings/secrets/actions の `IG_PAGE_TOKEN` を更新
