@@ -104,4 +104,4 @@ mkdir -p insights
 openssl enc -aes-256-cbc -pbkdf2 -salt -in "$out.tgz" -out insights/latest.enc -pass "pass:$key"
 printf '%s' "$key" | openssl pkeyutl -encrypt -pubin -inkey cloud/insights.pub.pem -pkeyopt rsa_padding_mode:oaep > insights/latest.key
 # error messages only (no numbers), to make failed calls easy to spot in the public log
-grep '^error' "$out/calls.log" | cut -f2- | sed -E 's/[0-9]{15,}/ID/g; s/(since|until)=[0-9]+/\1=T/g' | sort | uniq -c | sort -rn | head -40
+grep '^error' "$out/calls.log" | cut -f2- | sed -E 's/[0-9]{15,}/ID/g; s/(since|until)=[0-9]+/\1=T/g' | sort | uniq -c | sort -rn | head -40 || true
