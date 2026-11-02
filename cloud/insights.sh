@@ -93,6 +93,26 @@ since=$(( end - 28 * 86400 ))
   echo '}'
 } > "$out/account_range.json"
 
+# people to engage with: recent posts under the target hashtags, and target accounts' latest posts
+# (public data; read-only). Targets live in brain/targets.json.
+targets=brain/targets.json
+echo '{"hashtags":{},"accounts":{}}' > "$out/discover.json"
+if [ -f "$targets" ]; then
+  for tag in $(jq -r '.hashtags[]?' "$targets"); do
+    hid=$(get "ig_hashtag_search" --data-urlencode "user_id=$ig" --data-urlencode "q=$tag" | jq -r '.data[0].id // empty')
+    if [ -n "$hid" ]; then
+      r=$(get "$hid/recent_media" --data-urlencode "user_id=$ig" --data-urlencode 'fields=id,caption,permalink,like_count,comments_count,timestamp,media_type' --data-urlencode 'limit=30')
+    else
+      r='{"error":{"message":"hashtag search returned no id"}}'
+    fi
+    jq --arg k "$tag" --argjson v "$r" '.hashtags[$k] = $v' "$out/discover.json" > "$out/t" && mv "$out/t" "$out/discover.json"
+  done
+  for u in $(jq -r '.accounts[]?' "$targets"); do
+    r=$(get "$ig" --data-urlencode "fields=business_discovery.username($u){username,name,biography,followers_count,media_count,media.limit(6){caption,permalink,like_count,comments_count,timestamp,media_product_type}}")
+    jq --arg k "$u" --argjson v "$r" '.accounts[$k] = $v' "$out/discover.json" > "$out/t" && mv "$out/t" "$out/discover.json"
+  done
+fi
+
 calls=$(wc -l < "$out/calls.log"); errors=$(grep -c '^error' "$out/calls.log")
 jq -n --arg at "$(date -u +%FT%TZ)" --arg src "${TOKEN_SOURCE:-IG_PAGE_TOKEN}" --argjson calls "$calls" --argjson errors "$errors" '{fetchedAt:$at, token:$src, calls:$calls, errors:$errors}' > "$out/meta.json"
 echo "token=${TOKEN_SOURCE:-IG_PAGE_TOKEN} calls=$calls errors=$errors (details are inside the encrypted bundle)"

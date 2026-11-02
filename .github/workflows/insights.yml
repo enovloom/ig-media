@@ -8,7 +8,7 @@ on:
     - cron: '40 19 * * *'
   push:
     branches: [main]
-    paths: ['cloud/insights.sh', 'cloud/insights.pub.pem', 'cloud/insights.run', '.github/workflows/insights.yml']
+    paths: ['cloud/insights.sh', 'cloud/insights.pub.pem', 'cloud/insights.run', 'brain/targets.json', '.github/workflows/insights.yml']
   workflow_dispatch:
 
 permissions:
@@ -29,6 +29,7 @@ jobs:
           sparse-checkout: |
             cloud
             insights
+            brain
           filter: blob:none
       - name: Fetch insights
         env:
