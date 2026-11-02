@@ -2,10 +2,10 @@
   "paused": false,
   "postsPerDay": 4,
   "slots": [
-    "07:30",
     "12:00",
     "18:00",
-    "21:00"
+    "21:00",
+    "22:00"
   ],
   "planDaysAhead": 1,
   "minHoursBeforePublish": 6,

@@ -1,7 +1,7 @@
 {
   "type": "reel",
   "template": "studio_chat",
-  "publishAt": "2026-11-04T07:30:00+09:00",
+  "publishAt": "2026-11-04T22:00:00+09:00",
   "approved": true,
   "autoApprove": true,
   "media": [
@@ -16,5 +16,6 @@
     "variant": "studio_chat",
     "hypothesis": "見ている店長に「〜してない？」と直接聞く見出しは、自分ごとになって3秒以内の離脱が減る"
   },
-  "thumbOffsetMs": 1550
+  "thumbOffsetMs": 1550,
+  "movedFrom": "07:30 (2026-11-03: owner approved moving the 07:30 slot to 22:00, E003)"
 }
