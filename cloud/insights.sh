@@ -99,11 +99,12 @@ targets=brain/targets.json
 echo '{"hashtags":{},"accounts":{}}' > "$out/discover.json"
 if [ -f "$targets" ]; then
   for tag in $(jq -r '.hashtags[]?' "$targets"); do
-    hid=$(get "ig_hashtag_search" --data-urlencode "user_id=$ig" --data-urlencode "q=$tag" | jq -r '.data[0].id // empty')
+    found=$(get "ig_hashtag_search" --data-urlencode "user_id=$ig" --data-urlencode "q=$tag")
+    hid=$(jq -r '.data[0].id // empty' <<<"$found")
     if [ -n "$hid" ]; then
       r=$(get "$hid/recent_media" --data-urlencode "user_id=$ig" --data-urlencode 'fields=id,caption,permalink,like_count,comments_count,timestamp,media_type' --data-urlencode 'limit=30')
     else
-      r='{"error":{"message":"hashtag search returned no id"}}'
+      r=$(jq '{error: (.error // {message: "hashtag search returned no id"})}' <<<"$found")
     fi
     jq --arg k "$tag" --argjson v "$r" '.hashtags[$k] = $v' "$out/discover.json" > "$out/t" && mv "$out/t" "$out/discover.json"
   done
