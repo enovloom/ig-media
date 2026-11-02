@@ -25,9 +25,9 @@
 | ネタを足す | `brain/ideas.md` |
 | 予約中の投稿を直す | `auto/queue/<フォルダ>/scenes.json`（動画が自動で作り直される）・`caption.txt` |
 | 予約中の投稿を止める | `auto/hold.json` の `hold` にフォルダ名を足す（`queue/` と `auto/queue/` のどちらでも効く） |
+| 頭脳の動き方を変える | `brain/PLAYBOOK.md` |
 
 `queue/` と `media/` はPCから同期される場所です。PCにないファイルは消されるので、自動で作る予約は `auto/` に置いています。
-| 頭脳の動き方を変える | `brain/PLAYBOOK.md` |
 
 ## 中身
 - `brain/PLAYBOOK.md` … 頭脳が毎日従う手順
