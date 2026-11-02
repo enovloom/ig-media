@@ -29,6 +29,8 @@
    - `token.json` の `is_valid` が false、または `meta.json` の `errors` が全体の半分以上 → トークンか権限の問題
    - `state.json` に `failed` / `missed` がある、`render.json` に `error` がある → 投稿か動画づくりの失敗（直せるものは直す）
    - 数字の取得が 2 日以上止まっている
+   - `cloud/publish.ps1` に `auto/queue` を読む処理が無い（PC の同期で古い版に戻された可能性。戻っていたら `auto/` の予約は投稿されない）
+   - `git log --since=yesterday --grep '^sync:'` に、`auto/` や `cloud/`・`.github/` を変えた PC の同期がある
 
 ## 2. 分析する
 - 見るのは**投稿から 24 時間以上たったもの**。それより新しいものは「途中経過」として扱う。
