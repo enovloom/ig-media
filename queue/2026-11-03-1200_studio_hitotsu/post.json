@@ -2,7 +2,7 @@
   "type": "reel",
   "template": "studio_chat",
   "publishAt": "2026-11-03T12:00:00+09:00",
-  "approved": false,
+  "approved": true,
   "autoApprove": true,
   "media": [
     "video.mp4"
@@ -15,5 +15,6 @@
     "experiment": "E001,E002",
     "variant": "studio_chat",
     "hypothesis": "「〇〇したら△△だった」という意外な結果の見出しは、3秒以内の離脱が減る"
-  }
+  },
+  "thumbOffsetMs": 1550
 }
