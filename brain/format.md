@@ -60,9 +60,9 @@
   },
   "outro": {
     "title": ["説得の前に", "*大事にしたいこと*", "を聞く"],
-    "question": "店長さん、あなたならどう返しますか？\nコメントで教えてください👇",
-    "cta": "プロフィールのリンクから →",
-    "save": "保存して、次の面談で使う"
+    "question": "店長が明日そのまま使える一言を、毎日1つ",
+    "cta": "フォローして見返す",
+    "save": "現役店長5年半｜4人を店長に送り出した僕"
   }
 }
 ```
@@ -72,6 +72,6 @@
 - `chat.fix`: よい返し方（1〜4 個）。`fixLabel` は緑のラベル（「こう返す」「こう聞く」など）
 - `who`: `me` = 店長（右・オレンジ）、`them` = 相手（左・白）、`divider` = 「次の日」などの区切り
 - 吹き出しは 1 行 15 文字・4 行まで。`\n` で改行
-- `outro`: 最後のまとめ。`title` は 1 行 12 文字まで
+- `outro`: 最後のまとめ。`title` は 1 行 12 文字まで。`question`・`cta` は `brain/brand.md` の「呼びかけ」の表から 1 種類だけ選ぶ。`save` は自己紹介の一行（22 文字まで）
 - 確認コマンド: `node studio/check.mjs auto/queue/<フォルダ>/scenes.json`
 - 試しに動画にする: `node studio/render.mjs auto/queue/<フォルダ>/scenes.json /tmp/test.mp4`
