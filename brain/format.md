@@ -72,6 +72,7 @@
 - `chat.fix`: よい返し方（1〜4 個）。`fixLabel` は緑のラベル（「こう返す」「こう聞く」など）
 - `who`: `me` = 店長（右・オレンジ）、`them` = 相手（左・白）、`divider` = 「次の日」などの区切り
 - 吹き出しは 1 行 15 文字・4 行まで。`\n` で改行
+- 絵文字は 👍 👇 😊 のような絵文字専用の文字を使う。✋ ✕ ◯ などの記号系は日本語フォントの字形が優先されて、動画で消えることがある（2026-11-04 に ✋ が消えた）
 - `outro`: 最後のまとめ。`title` は 1 行 12 文字まで
 - 確認コマンド: `node studio/check.mjs auto/queue/<フォルダ>/scenes.json`
 - 試しに動画にする: `node studio/render.mjs auto/queue/<フォルダ>/scenes.json /tmp/test.mp4`
