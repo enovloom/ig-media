@@ -2,7 +2,7 @@
   "type": "reel",
   "template": "studio_chat",
   "publishAt": "2026-11-06T22:00:00+09:00",
-  "approved": false,
+  "approved": true,
   "autoApprove": true,
   "media": [
     "video.mp4"
@@ -15,5 +15,6 @@
     "experiment": "E001,E002,E003,E004",
     "variant": "studio_chat",
     "hypothesis": "直接の問いかけの見出しで、話題ごとの差を見る（E002 の勝ちパターン × E004）"
-  }
+  },
+  "thumbOffsetMs": 1550
 }
