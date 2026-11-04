@@ -1,0 +1,13 @@
+{
+    "type":  "reel",
+    "template":  "vrew",
+    "title":  "ミスが報告されるチームの作り方",
+    "scriptFile":  "学び02_ミスが報告されるチーム.txt",
+    "publishAt":  "2026-11-08T21:00:00+09:00",
+    "approved": true,
+    "media":  [
+                  "video.mp4"
+              ],
+    "thumbOffsetMs":  1000,
+    "captionFile":  "caption.txt"
+}
