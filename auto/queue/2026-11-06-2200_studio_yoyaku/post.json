@@ -1,0 +1,19 @@
+{
+  "type": "reel",
+  "template": "studio_chat",
+  "publishAt": "2026-11-06T22:00:00+09:00",
+  "approved": false,
+  "autoApprove": true,
+  "media": [
+    "video.mp4"
+  ],
+  "captionFile": "caption.txt",
+  "source": "https://note.com/en_lab7504/n/nb6ddf5b13172",
+  "brain": {
+    "theme": "コミュニケーション",
+    "hookType": "直接の問いかけ",
+    "experiment": "E001,E002,E003,E004",
+    "variant": "studio_chat",
+    "hypothesis": "直接の問いかけの見出しで、話題ごとの差を見る（E002 の勝ちパターン × E004）"
+  }
+}

@@ -24,7 +24,8 @@ export function checkSpec(spec) {
       need(typeof m.text === 'string' && m.text.length > 0, `${name}[${i}].text is empty`);
       const lines = String(m.text || '').split('\n');
       need(lines.length <= 4, `${name}[${i}] has more than 4 lines`);
-      lines.forEach(l => need(width(l) <= 15.5, `${name}[${i}] line too long for a bubble (${width(l).toFixed(1)} > 15.5): ${l}`));
+      // a bubble holds 14 full-width characters per line at this font size; longer lines wrap
+      lines.forEach(l => need(width(l) <= 14, `${name}[${i}] line too long for a bubble (${width(l).toFixed(1)} > 14): ${l}`));
     });
   };
   msgs(c.problem, 'chat.problem', 2, 5);
