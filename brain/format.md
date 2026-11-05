@@ -26,6 +26,7 @@
   "captionFile": "caption.txt",
   "brain": {
     "theme": "任せ方",
+    "why": "ひとりで抱えるのをやめたい",
     "hookType": "意外な結果",
     "experiment": "E001",
     "variant": "A",
@@ -35,6 +36,7 @@
 ```
 - `approved` は動画ができた時点で自動で `true` になる（`autoApprove: true` のとき）。止めたいときは `autoApprove` を `false` にする
 - `brain` は分析用のメモ。手で作るときは省略してよい
+- `brain.why` は `brain/brand.md` の「届けたい人の『なぜ』」の表の 1 列目から選ぶ
 
 ## scenes.json（動画の台本）
 ```json

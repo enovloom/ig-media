@@ -58,8 +58,10 @@
    - 今から `minHoursBeforePublish` 時間以内の枠には作らない
    - `touchManualPosts` が `false` なら、人が作った予約（`post.json` に `brain` が無いもの）は変えない
 2. 話題を選ぶ: `brain/ideas.md` のネタ帳と学びから選ぶ。直近 14 日の投稿（`queue/` と `auto/queue/` のキャプションと台本）と話題が重ならないようにする。使ったネタは `ideas.md` で「使用済み（日付）」にし、思いついたネタは書き足す。
+   - 1 本ごとに、`brain/brand.md` の「届けたい人の『なぜ』」から 1 つ選び、キャプションの「なぜにつなぐ 1 行」をそれに合わせて書く。同じ「なぜ」が 1 日に 2 本以上にならないようにする
+   - 1 日 1 本までは「そもそも、なぜ育てるのか」の枠（`ideas.md`）から選んでよい
 3. 1 本ごとに `auto/queue/<YYYY-MM-DD-HHMM>_studio_<ローマ字の短い名前>/` を作り、`scenes.json`・`caption.txt`・`post.json` を `brain/format.md` どおりに書く。
-   - `post.json` は `"approved": false, "autoApprove": true` にする。`brain` に theme・hookType・experiment・variant・hypothesis を必ず入れる
+   - `post.json` は `"approved": false, "autoApprove": true` にする。`brain` に theme・why・hookType・experiment・variant・hypothesis を必ず入れる
    - `brain/brand.md` のルールを守る（使ってよい事実以外の実績・数字を作らない、など）
 4. 確かめる:
    - `node studio/check.mjs auto/queue/<フォルダ>/scenes.json` が OK になるまで直す
@@ -89,7 +91,7 @@
 ## 毎週月曜はまとめも書く
 月曜の回は、日報とは別に `notes` の `brain/reports/weekly-YYYY-MM-DD.md` に 1 週間のまとめを書く:
 1. 先週と比べた数字（再生の中央値、離脱、保存・シェア、フォロワー）
-2. 勝ちパターンと、やめたこと
+2. 勝ちパターンと、やめたこと。「なぜ」ごとの保存・シェア・コメント（`posts.csv` の `queue_id` で各 `post.json` の `brain.why` とつき合わせる。どの「なぜ」が届きやすいか。コメントに出てきた店長の本音があれば、`brand.md` の「なぜ」の書き直しを提案する）
 3. 判定した実験と、来週試すこと
 4. ブランド・ルール・設定について、人に提案したいこと（あれば）
 
