@@ -2,7 +2,7 @@
   "type": "reel",
   "template": "studio_chat",
   "publishAt": "2026-11-07T12:00:00+09:00",
-  "approved": false,
+  "approved": true,
   "autoApprove": true,
   "media": [
     "video.mp4"
@@ -16,5 +16,6 @@
     "experiment": "E003,E004,E006",
     "variant": "studio_chat",
     "hypothesis": "ミス・辞めたい・沈黙のような重い場面を、直接の問いかけで見せると止まって見てもらえる（E006）"
-  }
+  },
+  "thumbOffsetMs": 1550
 }
