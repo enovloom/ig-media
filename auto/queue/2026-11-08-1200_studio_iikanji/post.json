@@ -2,7 +2,7 @@
   "type": "reel",
   "template": "studio_chat",
   "publishAt": "2026-11-08T12:00:00+09:00",
-  "approved": false,
+  "approved": true,
   "autoApprove": true,
   "media": [
     "video.mp4"
@@ -16,5 +16,6 @@
     "experiment": "E003,E004,E006",
     "variant": "studio_chat",
     "hypothesis": "日々の段取りの話（stakes: low）は、重い場面より止まりにくい（E006 の比較用）"
-  }
+  },
+  "thumbOffsetMs": 1550
 }
