@@ -2,7 +2,7 @@
   "type": "reel",
   "template": "studio_chat",
   "publishAt": "2026-11-09T22:00:00+09:00",
-  "approved": false,
+  "approved": true,
   "autoApprove": true,
   "media": [
     "video.mp4"
@@ -16,5 +16,6 @@
     "experiment": "E006,E008",
     "variant": "studio_chat",
     "hypothesis": "問いかけではなく言い切りの見出し（〜は〜で止まる）でも、重い場面なら止まって見てもらえるか（E008）"
-  }
+  },
+  "thumbOffsetMs": 1550
 }
