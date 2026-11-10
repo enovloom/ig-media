@@ -2,7 +2,7 @@
   "type": "reel",
   "template": "studio_chat",
   "publishAt": "2026-11-12T21:00:00+09:00",
-  "approved": false,
+  "approved": true,
   "autoApprove": true,
   "media": [
     "video.mp4"
@@ -18,5 +18,6 @@
     "experiment": "E006,E009,E010,E008",
     "variant": "studio_chat",
     "hypothesis": "言い切りの見出しも重い場面なら強い（E008）。短い版は最後まで見られやすい（E009）。フォローの呼びかけでフォローが生まれる（E010）"
-  }
+  },
+  "thumbOffsetMs": 1550
 }
