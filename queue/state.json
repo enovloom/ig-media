@@ -451,5 +451,13 @@
     "status": "published",
     "attempts": 1,
     "containerId": "17876413044675689"
+  },
+  "2026-11-12-1800_studio_rule": {
+    "status": "published",
+    "attempts": 1,
+    "mediaId": "18117471845327489",
+    "permalink": "https://www.instagram.com/reel/Dfoypx8GVKi/",
+    "postedAt": "2026-11-12T10:00:42.7777709+00:00",
+    "containerId": "17876499588675689"
   }
 }
