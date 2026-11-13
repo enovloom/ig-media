@@ -2,7 +2,7 @@
   "type": "reel",
   "template": "studio_chat",
   "publishAt": "2026-11-15T22:00:00+09:00",
-  "approved": false,
+  "approved": true,
   "autoApprove": true,
   "media": [
     "video.mp4"
@@ -19,5 +19,6 @@
     "experiment": "E006,E009,E010,E013",
     "variant": "studio_chat",
     "hypothesis": "数字や一言で答えられる問いにすると、初めてのコメントが生まれる（E013）"
-  }
+  },
+  "thumbOffsetMs": 1550
 }
