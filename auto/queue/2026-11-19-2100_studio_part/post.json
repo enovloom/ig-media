@@ -2,7 +2,7 @@
   "type": "reel",
   "template": "studio_chat",
   "publishAt": "2026-11-19T21:00:00+09:00",
-  "approved": false,
+  "approved": true,
   "autoApprove": true,
   "media": [
     "video.mp4"
@@ -19,5 +19,6 @@
     "experiment": "E006,E009",
     "variant": "studio_chat",
     "hypothesis": "勝ちパターン（問いかけ・重い場面・短い版）を続ける。答えやすい問いかけは判定まで残す"
-  }
+  },
+  "thumbOffsetMs": 1550
 }
