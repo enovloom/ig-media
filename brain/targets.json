@@ -8,11 +8,13 @@
     "shiki_fp_138",
     "shinobu.matsumoto_",
     "taguchi_634",
-    "taisei_yamauchi"
+    "taisei_yamauchi",
+    "enovloom"
   ],
   "hashtags": [],
   "notes": {
     "accounts": "関わりたい店長・サロン・整体院・ジムのアカウントのユーザー名（@なし）。ビジネス／クリエイターアカウントなら、毎朝最新の投稿を取ってきて「今日関わる相手」に使う。個人アカウントは取れない",
-    "hashtags": "ハッシュタグ検索は Meta の審査（Instagram Public Content Access）が通るまで使えない。審査が通るまでは空のままにする"
+    "hashtags": "ハッシュタグ検索は Meta の審査（Instagram Public Content Access）が通るまで使えない。審査が通るまでは空のままにする",
+    "self": "enovloom は自分のアカウント。Instagram の投稿一覧（/media）が空で返るときに、公開されている投稿が見えているかを確かめるために入れている（2026-11-18〜）。関わる相手には使わない"
   }
 }
