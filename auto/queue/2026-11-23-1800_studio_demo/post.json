@@ -1,0 +1,23 @@
+{
+  "type": "reel",
+  "template": "studio_chat",
+  "publishAt": "2026-11-23T18:00:00+09:00",
+  "approved": false,
+  "autoApprove": true,
+  "media": [
+    "video.mp4"
+  ],
+  "captionFile": "caption.txt",
+  "source": "https://note.com/en_lab7504/n/nb6ddf5b13172",
+  "brain": {
+    "theme": "コミュニケーション",
+    "hookType": "直接の問いかけ",
+    "stakes": "high",
+    "length": "short",
+    "cta": "follow",
+    "question": "open",
+    "experiment": "E006,E009",
+    "variant": "studio_chat",
+    "hypothesis": "勝ちパターン（問いかけ・重い場面・短い版）を続ける。問いかけはふつうの形に戻す（E013 不採用）"
+  }
+}
