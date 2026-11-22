@@ -2,7 +2,7 @@
   "type": "reel",
   "template": "studio_chat",
   "publishAt": "2026-11-24T21:00:00+09:00",
-  "approved": false,
+  "approved": true,
   "autoApprove": true,
   "media": [
     "video.mp4"
@@ -19,5 +19,6 @@
     "experiment": "E006,E009,E014",
     "variant": "remake",
     "hypothesis": "14 日以上前に強かった話を新しい場面で作り直すと、新しい話より再生が多い（E014）"
-  }
+  },
+  "thumbOffsetMs": 1550
 }
