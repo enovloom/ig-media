@@ -843,5 +843,13 @@
     "status": "published",
     "containerId": "17879965080675689",
     "attempts": 1
+  },
+  "2026-11-24-1800_studio_chikoku": {
+    "containerId": "17880014853675689",
+    "postedAt": "2026-11-24T09:50:08.3467540+00:00",
+    "status": "published",
+    "permalink": "https://www.instagram.com/reel/DgHq-Jngqcx/",
+    "attempts": 1,
+    "mediaId": "18114834764615707"
   }
 }
