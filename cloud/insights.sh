@@ -39,6 +39,20 @@ for page in 1 2 3 4 5 6 7 8 9 10; do
   [ -n "$(jq -r '.paging.next // empty' <<<"$r")" ] && [ -n "$cursor" ] || break
 done
 
+# Since 2026-11-17 the list above comes back empty or partial (recent reels are missing),
+# while each post can still be read by its ID. autopost records the ID of every post it
+# publishes in queue/state.json, so add the ones the list left out, one by one.
+# The workflow checks out only cloud/insights/brain without blobs; git show fetches the file.
+state_json=$(cat queue/state.json 2>/dev/null || git show HEAD:queue/state.json 2>/dev/null || echo '{}')
+listed=$(jq '.data | length' "$out/media.json")
+for id in $(jq -r '[.[]? | select(.status == "published") | .mediaId // empty] | unique | .[]' <<<"$state_json" 2>/dev/null); do
+  jq -e --arg id "$id" 'any(.data[]?; .id == $id)' "$out/media.json" >/dev/null && continue
+  r=$(get "$id" --data-urlencode 'fields=id,caption,media_type,media_product_type,timestamp,permalink,like_count,comments_count,thumbnail_url')
+  jq -e '.id' >/dev/null 2>&1 <<<"$r" || continue
+  jq --argjson r "$r" '.data += [$r]' "$out/media.json" > "$out/t" && mv "$out/t" "$out/media.json"
+done
+echo "posts: $listed from the list, $(( $(jq '.data | length' "$out/media.json") - listed )) added by ID"
+
 reel_metrics="views reach saved shares likes comments total_interactions ig_reels_avg_watch_time ig_reels_video_view_total_time reels_skip_rate"
 feed_metrics="views reach saved shares likes comments total_interactions follows profile_visits profile_activity"
 # one call per post with every metric; if the API rejects the set, fall back to one metric at a time
