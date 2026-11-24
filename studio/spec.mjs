@@ -37,6 +37,8 @@ export function checkSpec(spec) {
   const o = spec.outro || {};
   need(Array.isArray(o.title) && o.title.length >= 1 && o.title.length <= 3, 'outro.title: 1-3 lines');
   (o.title || []).forEach((l, i) => need(width(l) <= 12, `outro.title[${i}] too long (${width(l).toFixed(1)} > 12): ${plain(l)}`));
+  // the yellow highlight adds padding, so a highlighted line wraps its last character from 10 chars on
+  (o.title || []).forEach((l, i) => need(!String(l).includes('*') || width(l) <= 9, `outro.title[${i}] has a highlight and is too long (${width(l).toFixed(1)} > 9; it would wrap): ${plain(l)}`));
   need(!o.question || plain(o.question).length <= 60, 'outro.question: up to 60 chars');
   need(!o.cta || width(o.cta) <= 16, 'outro.cta: up to 16 chars');
   need(!o.save || width(o.save) <= 22, 'outro.save: up to 22 chars');
