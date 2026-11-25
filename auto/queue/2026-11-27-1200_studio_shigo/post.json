@@ -1,0 +1,23 @@
+{
+  "type": "reel",
+  "template": "studio_chat",
+  "publishAt": "2026-11-27T12:00:00+09:00",
+  "approved": false,
+  "autoApprove": true,
+  "media": [
+    "video.mp4"
+  ],
+  "captionFile": "caption.txt",
+  "source": "https://note.com/en_lab7504/n/nb6ddf5b13172",
+  "brain": {
+    "theme": "コミュニケーション",
+    "hookType": "直接の問いかけ",
+    "stakes": "high",
+    "length": "short",
+    "cta": "follow",
+    "question": "open",
+    "experiment": "E006,E009,E015,E014",
+    "variant": "remake",
+    "hypothesis": "14 日以上前に強かった話を新しい場面で作り直すと、新しい話より再生が多い（E014）"
+  }
+}
