@@ -2,7 +2,7 @@
   "type": "reel",
   "template": "studio_chat",
   "publishAt": "2026-11-30T18:00:00+09:00",
-  "approved": true,
+  "approved": false,
   "autoApprove": true,
   "media": [
     "video.mp4"
@@ -12,12 +12,12 @@
   "brain": {
     "planner": "codex",
     "theme": "部下育成",
-    "hookType": "直接の問いかけ",
+    "hookType": "結論の先出し",
     "length": "short",
     "experiment": "E016",
     "variant": "kailoop_consult",
     "offerId": "kailoop_consult",
-    "hypothesis": "一つの実践方法から、その続きに必要な教材・相談だけを案内すると、購入または具体的な相談につながるか。効果は未確認"
+    "hypothesis": "冒頭から実践方法を具体的に見せ、実例から教材・導入相談の一つへ案内する。E016の初回公開前の表示改善。比較対照がないため購入への因果効果は断定しない"
   },
   "thumbOffsetMs": 1550
 }
