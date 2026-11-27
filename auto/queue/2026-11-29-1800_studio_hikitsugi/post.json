@@ -1,0 +1,24 @@
+{
+  "type": "reel",
+  "template": "studio_chat",
+  "publishAt": "2026-11-29T18:00:00+09:00",
+  "approved": false,
+  "autoApprove": true,
+  "media": [
+    "video.mp4"
+  ],
+  "captionFile": "caption.txt",
+  "thumbOffsetMs": 1550,
+  "brain": {
+    "planner": "codex",
+    "theme": "引き継ぎ",
+    "hookType": "具体策の先出し",
+    "length": "short",
+    "experiment": "E016",
+    "variant": "value_first_practice",
+    "cta": "save",
+    "contentRevision": "2026-11-28-value-first-v1",
+    "qualityBaseline": "2026-11-27-all-future-v1",
+    "hypothesis": "本人指定の品質基準を空き枠の新作にも適用。具体策を冒頭から示し、会話例と一つの実践行動をそろえる。E016の継続であり新しい単一要因AB実験ではない"
+  }
+}
