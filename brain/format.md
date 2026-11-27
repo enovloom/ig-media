@@ -33,7 +33,7 @@
   }
 }
 ```
-- `approved` は動画ができた時点で自動で `true` になる（`autoApprove: true` のとき）。止めたいときは `autoApprove` を `false` にする
+- `approved` は動画ができた時点で自動で `true` になる（`autoApprove: true` のとき）。予約を止めたいときは `auto/hold.json` にIDを追加する。`autoApprove:false` は自動承認を止めるだけで、既に `approved:true` の予約は止まらない
 - `brain` は分析用のメモ。手で作るときは省略してよい
 
 ## scenes.json（動画の台本）

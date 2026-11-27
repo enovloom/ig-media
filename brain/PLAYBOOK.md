@@ -1,6 +1,6 @@
 # 毎日の運用手順（自動で動く「頭脳」用）
 
-毎朝 1 回、Claude Code の定期タスクがこの手順どおりに動きます。
+Codex がこの手順どおりに動きます。`settings.json` の `planner` を読み、`codex` 指定の間は旧Claudeタスクは分析だけで終了し、予約・設定・日報を更新しません。具体的な販売運用は `brain/CODEX.md` に従います。
 人が読んで直してもよいファイルです。書き換えると、次の回から動き方が変わります。
 
 ## 置き場所
@@ -14,8 +14,8 @@
 `notes` が公開になっていたら、数字・鍵・日報は書かずに日報の冒頭で知らせて、そこで止まる。
 
 ## 0. 準備
-1. `enovloom/ig-media` と `enovloom/notes` を用意する（無ければ `add_repo` で追加して clone）。どちらも `main` で作業する。
-2. `notes` が非公開か確認する（`list_repos` の visibility）。
+1. `enovloom/ig-media` と `enovloom/notes` を用意する（無ければ接続済みGitHubまたは許可されたgit cloneで取得）。どちらも `main` で作業する。
+2. `notes` が非公開か確認する（接続済みGitHubのリポジトリ情報）。
 3. `brain/settings.json`・`brain/brand.md`・`brain/format.md` と、`notes` の `brain/learnings.md`・`brain/experiments.md`・直近 3 日分の `brain/reports/` を読む。
 
 ## 1. 測る
@@ -41,6 +41,7 @@
   3. 見続ける: 平均視聴 ÷ 長さ（`watch_ratio`）
   4. 反応する: 保存・シェア・コメント ÷ リーチ
   5. フォローする: フォロー数、プロフィールのアクセス、リンクのタップ
+  6. 相談・購入: noteの本番購入、KAILOOPの相談・条件提示・本番入金・利用開始。取れない数は未確認。リンクと購入の帰属が分からなければ推測しない
 - 進行中の実験（`experiments.md`）を判定する。目安は各パターン 3 本以上、24 時間後の数字で比べる。差が小さい・本数が足りないときは「継続」にする。たまたまの 1 本で結論を出さない。
 - 分かったことを `learnings.md` に書く。根拠の数字と投稿名を必ず添える。前の学びと食い違ったら、どちらが正しそうかも書く。
 
@@ -68,8 +69,9 @@
    - キャプションを声に出したつもりで読み、不自然な所を直す
 
 ## 5. 保存する
-1. `ig-media`: 新しい `auto/queue/` のフォルダと、変えた `auto/hold.json`・`brain/ideas.md` などを `main` にコミットしてプッシュする（プッシュで動画づくりが自動で始まる）。プッシュが失敗したら `git pull --rebase` してやり直す。
-2. `notes`: `brain/metrics/`・`learnings.md`・`experiments.md`・日報をコミットしてプッシュする。
+1. `python3 brain/tools/queue_check.py --repo .` を実行。最新mainの別タスクの予約も含め、重複・本数超過を解消してから保存する。
+2. `ig-media`: 新しい `auto/queue/` のフォルダと、変えた `auto/hold.json`・`brain/ideas.md` などを `main` にコミットしてプッシュする（プッシュで動画づくりが自動で始まる）。プッシュが失敗したら `git pull --rebase` してやり直す。
+3. `notes`: `brain/metrics/`・`learnings.md`・`experiments.md`・日報をコミットしてプッシュする。
 
 ## 6. 日報を書く
 `notes` の `brain/reports/YYYY-MM-DD.md` に、スマホで 1 分で読める長さで書く:

@@ -1,11 +1,11 @@
 # 自動運用のしくみ
 
-毎日、人の手もPCも使わずに次のサイクルが回ります。
+GitHub Actions が動画生成・投稿・数字取得を担当します。Codex の入口は `AGENTS.md` と `brain/CODEX.md`。旧Claude定期タスクそのものは別サービスにあるため、ここから停止したとは扱いません。
 
 ```
  04:40  数字を取る（GitHub Actions: insights）… 暗号化して insights/ に保存
    ↓
- 06:10  頭脳が考える（Claude Code の定期タスク）
+ 朝      頭脳が考える（Codex。予定と実行結果はChatGPTの定期タスクで確認）
           測る → 分析 → 課題をしぼる → 仮説 → 台本とキャプションを書く → 予約に入れる → 日報
    ↓
  すぐ  動画を作る（GitHub Actions: render）… scenes.json から auto/media/…/video.mp4
@@ -19,7 +19,7 @@
 | やりたいこと | 触るファイル |
 |---|---|
 | 今日の日報を読む | `enovloom/notes` → `brain/reports/` |
-| 自動投稿を一時停止 | `brain/settings.json` の `"paused"` を `true` |
+| 新しい台本制作を一時停止 | `brain/settings.json` の `"paused"` を `true`（予約済み投稿は止まらない） |
 | 1日の本数・時刻を変える | `brain/settings.json` の `postsPerDay`・`slots` |
 | 話し方・ルールを変える | `brain/brand.md` |
 | ネタを足す | `brain/ideas.md` |

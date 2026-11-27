@@ -1,0 +1,22 @@
+{
+  "type": "reel",
+  "template": "studio_chat",
+  "publishAt": "2026-11-29T12:00:00+09:00",
+  "approved": false,
+  "autoApprove": true,
+  "media": [
+    "video.mp4"
+  ],
+  "captionFile": "caption.txt",
+  "source": "https://note.com/en_lab7504/n/nb6ddf5b13172",
+  "brain": {
+    "planner": "codex",
+    "theme": "任せ方",
+    "hookType": "直接の問いかけ",
+    "length": "short",
+    "experiment": "E016",
+    "variant": "note_delegation",
+    "offerId": "note_delegation",
+    "hypothesis": "一つの実践方法から、その続きに必要な教材・相談だけを案内すると、購入または具体的な相談につながるか。効果は未確認"
+  }
+}

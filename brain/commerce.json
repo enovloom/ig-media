@@ -1,0 +1,32 @@
+{
+  "checkedOn": "2026-11-27",
+  "profile": {
+    "username": "enovloom",
+    "verifiedWebsite": "https://note.com/en_lab7504/n/nb6ddf5b13172",
+    "verifiedAt": "2026-11-26T20:32:13Z"
+  },
+  "offers": {
+    "note_delegation": {
+      "name": "なぜ、優秀なスタッフが「次の店長」にならないのか",
+      "mode": "purchase",
+      "priceJPY": 1980,
+      "url": "https://note.com/en_lab7504/n/nb6ddf5b13172",
+      "includes": "第1〜8章、面談・任せる仕事・振り返りの実践シート（Word/PDF）、記入例、最初の2週間の進め方",
+      "cta": "プロフィールのnoteで内容を確認する",
+      "measurement": "noteの実際の購入記録。Instagramからの購入と結びつく証拠がなければ流入元は不明"
+    },
+    "kailoop_consult": {
+      "name": "KAILOOP 導入相談",
+      "mode": "consultation",
+      "url": "https://kailoop-pilot-interest.enovloom-6805.chatgpt.site/consult",
+      "demoUrl": "https://kailoop-beta-demo.enovloom-6805.chatgpt.site/",
+      "consultationPriceJPY": 0,
+      "pilotPriceJPY": 49800,
+      "pilotTerm": "1店舗・30日・自動更新なし。適合確認と条件提示後に申し込む別の有料支援",
+      "availability": "相談受付。実サービスの開始・決済案内は最新の販売準備と受入枠を確認してから",
+      "cta": "自店で使う相談はプロフィールのDMへ。直接の相談ページも案内できる",
+      "measurement": "相談→本人のデモ体験→条件提示→本番決済→利用開始を別々に確認"
+    }
+  }
+}
+

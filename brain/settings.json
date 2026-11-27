@@ -17,5 +17,6 @@
     "planDaysAhead": "何日先まで予約を作るか",
     "minHoursBeforePublish": "動画づくりとページ公開の時間を見て、これより近い時刻には予約しない",
     "touchManualPosts": "true にすると、上限を超える手作りの予約（まだ投稿前のもの）を未承認に戻してよい"
-  }
+  },
+  "planner": "codex"
 }
