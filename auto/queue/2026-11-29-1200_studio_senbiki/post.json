@@ -2,7 +2,7 @@
   "type": "reel",
   "template": "studio_chat",
   "publishAt": "2026-11-29T12:00:00+09:00",
-  "approved": true,
+  "approved": false,
   "autoApprove": true,
   "media": [
     "video.mp4"
@@ -12,12 +12,15 @@
   "brain": {
     "planner": "codex",
     "theme": "任せ方",
-    "hookType": "結論の先出し",
+    "hookType": "具体策の先出し",
     "length": "short",
     "experiment": "E016",
-    "variant": "note_delegation",
-    "offerId": "note_delegation",
-    "hypothesis": "冒頭から実践方法を具体的に見せ、実例から教材・導入相談の一つへ案内する。E016の初回公開前の表示改善。比較対照がないため購入への因果効果は断定しない"
+    "variant": "value_first_sale",
+    "cta": "note_delegation",
+    "contentRevision": "2026-11-27-all-future-v1",
+    "previousExperiments": "E016",
+    "hypothesis": "本人の指示により未公開全投稿の冒頭・会話例・締め・本文を更新。具体策から一つの次の行動へつなげる。複数箇所の変更であり因果効果は未検証",
+    "offerId": "note_delegation"
   },
   "thumbOffsetMs": 1550
 }

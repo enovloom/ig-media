@@ -2,7 +2,7 @@
   "type": "reel",
   "template": "studio_chat",
   "publishAt": "2026-11-27T21:00:00+09:00",
-  "approved": true,
+  "approved": false,
   "autoApprove": true,
   "media": [
     "video.mp4"
@@ -10,15 +10,16 @@
   "captionFile": "caption.txt",
   "source": "https://note.com/en_lab7504/n/nb6ddf5b13172",
   "brain": {
+    "planner": "codex",
     "theme": "店舗運営",
-    "hookType": "直接の問いかけ",
-    "stakes": "high",
+    "hookType": "具体策の先出し",
     "length": "short",
-    "cta": "follow",
-    "question": "open",
-    "experiment": "E006,E009,E015",
-    "variant": "new",
-    "hypothesis": "勝ちパターン（問いかけ・重い場面・短い版）で新しい話を出す（E014 の比べる相手）"
+    "experiment": "E016",
+    "variant": "value_first_practice",
+    "cta": "save",
+    "contentRevision": "2026-11-27-all-future-v1",
+    "previousExperiments": "E006,E009,E015",
+    "hypothesis": "本人の指示により未公開全投稿の冒頭・会話例・締め・本文を更新。具体策から一つの次の行動へつなげる。複数箇所の変更であり因果効果は未検証"
   },
   "thumbOffsetMs": 1550
 }
