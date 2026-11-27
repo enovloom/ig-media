@@ -5,7 +5,7 @@ GitHub Actions が動画生成・投稿・数字取得を担当します。Codex
 ```
  04:40  数字を取る（GitHub Actions: insights）… 暗号化して insights/ に保存
    ↓
- 朝      頭脳が考える（Codex。予定と実行結果はChatGPTの定期タスクで確認）
+ 08:00頃 頭脳が考える（Codex。日本時間・前後1時間内で実行）
           測る → 分析 → 課題をしぼる → 仮説 → 台本とキャプションを書く → 予約に入れる → 日報
    ↓
  すぐ  動画を作る（GitHub Actions: render）… scenes.json から auto/media/…/video.mp4
