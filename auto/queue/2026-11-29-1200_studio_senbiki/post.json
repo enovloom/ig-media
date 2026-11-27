@@ -2,7 +2,7 @@
   "type": "reel",
   "template": "studio_chat",
   "publishAt": "2026-11-29T12:00:00+09:00",
-  "approved": false,
+  "approved": true,
   "autoApprove": true,
   "media": [
     "video.mp4"
@@ -18,5 +18,6 @@
     "variant": "note_delegation",
     "offerId": "note_delegation",
     "hypothesis": "一つの実践方法から、その続きに必要な教材・相談だけを案内すると、購入または具体的な相談につながるか。効果は未確認"
-  }
+  },
+  "thumbOffsetMs": 1550
 }
