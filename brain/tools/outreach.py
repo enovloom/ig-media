@@ -12,6 +12,7 @@ from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
+from zoneinfo import ZoneInfo
 
 KINDS = ("contacted", "replied", "consultation", "demo", "offer", "paid", "refund", "used", "declined", "unreachable")
 
@@ -40,21 +41,51 @@ def add_lead(data, handle, org, reason, post_url):
     return lead
 
 
-def record(data, handle, kind, source_ref, offer=None, amount=None, test=False):
+def record(data, handle, kind, source_ref, offer=None, amount=None, test=False,
+           *, order_ref=None, occurred_at=None, attribution_ref=None, fee_jpy=None):
+    source_ref = source_ref.strip()
+    attribution_ref = attribution_ref.strip() if attribution_ref else None
     if kind not in KINDS or not source_ref.strip():
         raise ValueError("known event kind and actual source reference required")
-    handle = normalize(handle)
-    lead = next((x for x in data["leads"] if x["handle"] == handle), None)
-    if not lead:
+    financial = kind in ("paid", "refund")
+    handle = normalize(handle) if handle else None
+    lead = next((x for x in data["leads"] if x["handle"] == handle), None) if handle else None
+    if (handle or not financial) and not lead:
         raise ValueError("lead missing")
+    if financial and (not order_ref or not order_ref.strip() or not occurred_at):
+        raise ValueError("payment/refund requires actual order reference and source timestamp")
+    order_ref = order_ref.strip() if order_ref else None
+    now = datetime.now(timezone.utc)
+    at = datetime.fromisoformat(occurred_at) if occurred_at else now
+    if at.tzinfo is None or at > now:
+        raise ValueError("source timestamp must include timezone and cannot be in the future")
+    if fee_jpy is not None and (not financial or type(fee_jpy) is not int or fee_jpy < 0):
+        raise ValueError("fee must be a nonnegative integer yen amount on a financial event")
+    order_events = [x for x in data["events"] if order_ref and x.get("orderRef") == order_ref and x["test"] == test]
+    payment = next((x for x in order_events if x["kind"] == "paid"), None)
+    if kind == "refund" and payment:
+        if payment["offer"] != offer or at < datetime.fromisoformat(payment["occurredAt"]):
+            raise ValueError("refund offer/timestamp does not match its payment")
+        if lead and lead["id"] != payment["leadId"]:
+            raise ValueError("refund lead does not match its payment")
+        if attribution_ref and attribution_ref != payment.get("attributionRef"):
+            raise ValueError("refund cannot change payment attribution")
+        attribution_ref = payment.get("attributionRef")
     previous = next((x for x in data["events"] if x["sourceRef"] == source_ref), None)
-    payload = {"leadId": lead["id"], "kind": kind, "sourceRef": source_ref,
+    payload = {"leadId": payment["leadId"] if kind == "refund" and payment else (lead["id"] if lead else None), "kind": kind, "sourceRef": source_ref,
                "offer": offer, "amountJPY": amount, "test": test}
+    if financial:
+        payload.update(orderRef=order_ref.strip(), occurredAt=at.isoformat(),
+                       attributionRef=attribution_ref or None, feeJPY=fee_jpy)
+    elif occurred_at:
+        payload["occurredAt"] = at.isoformat()
     if previous:
         if all(previous.get(k) == v for k, v in payload.items()):
             return {"duplicate": True, "event": previous}
         raise ValueError("source reference already used with different facts")
-    related = [x for x in data["events"] if x["leadId"] == lead["id"]]
+    if kind == "paid" and payment:
+        raise ValueError("order already recorded; do not count email and dashboard twice")
+    related = [x for x in data["events"] if lead and x["leadId"] == lead["id"]]
     if kind == "contacted" and any(x["kind"] in ("contacted", "declined", "unreachable") for x in related):
         raise ValueError("repeat outreach blocked; inspect the existing conversation")
     if kind == "offer" and any(x["kind"] == "declined" for x in related):
@@ -62,26 +93,45 @@ def record(data, handle, kind, source_ref, offer=None, amount=None, test=False):
     if kind in ("paid", "refund"):
         if not offer or type(amount) is not int or amount <= 0:
             raise ValueError("payment/refund requires offer and positive integer yen amount")
-        balance = sum((1 if x["kind"] == "paid" else -1) * x["amountJPY"] for x in related
+        balance = sum((1 if x["kind"] == "paid" else -1) * x["amountJPY"] for x in order_events
                       if x["offer"] == offer and x["test"] == test and x["kind"] in ("paid", "refund"))
         if kind == "refund" and amount > balance:
-            raise ValueError("refund exceeds recorded payment for this lead and offer")
+            raise ValueError("refund exceeds recorded payment for this order and offer")
     elif amount is not None:
         raise ValueError("only paid/refund events may contain money")
-    event = {**payload, "recordedAt": datetime.now(timezone.utc).isoformat()}
+    event = {**payload, "occurredAt": at.isoformat(), "recordedAt": now.isoformat()}
     data["events"].append(event)
     return {"duplicate": False, "event": event}
 
 
-def report(data):
-    events = [x for x in data["events"] if not x["test"]]
+def report(data, month=None):
+    if month:
+        datetime.strptime(month, "%Y-%m")
+        if not re.fullmatch(r"\d{4}-\d{2}", month):
+            raise ValueError("month must be YYYY-MM")
+    all_real = [x for x in data["events"] if not x["test"]]
+    def in_month(event):
+        if not month:
+            return True
+        stamp = event.get("occurredAt")
+        return bool(stamp and datetime.fromisoformat(stamp).astimezone(ZoneInfo("Asia/Tokyo")).strftime("%Y-%m") == month)
+    events = [x for x in all_real if in_month(x)]
     paid = [x for x in events if x["kind"] == "paid"]
     refunds = [x for x in events if x["kind"] == "refund"]
-    return {"coverage": "記録済みの証拠のみ。全体の購入件数・売上、Instagramへの帰属は別途確認が必要",
+    gross, returned = sum(x["amountJPY"] for x in paid), sum(x["amountJPY"] for x in refunds)
+    attributed = [x for x in events if x.get("attributionRef") and x["kind"] in ("paid", "refund")]
+    money = paid + refunds
+    return {"coverage": "記録済みの証拠のみ。金額は顧客の支払額（税・手数料控除前）、会計売上や利益ではない。流入元の証拠がない購入はInstagramの成果に含めない",
+            "monthJST": month,
             "leads": len(data["leads"]), "events": {k: sum(x["kind"] == k for x in events) for k in KINDS},
-            "recordedGrossJPY": sum(x["amountJPY"] for x in paid),
-            "recordedRefundJPY": sum(x["amountJPY"] for x in refunds),
-            "testEventsExcluded": len(data["events"]) - len(events)}
+            "recordedGrossJPY": gross, "recordedRefundJPY": returned,
+            "recordedNetBeforeFeesJPY": gross - returned,
+            "instagramAttributedNetBeforeFeesJPY": sum((1 if x["kind"] == "paid" else -1) * x["amountJPY"] for x in attributed),
+            "paidOrdersWithUnknownAttribution": sum(not x.get("attributionRef") for x in paid),
+            "knownFeesJPY": sum(x.get("feeJPY") or 0 for x in money),
+            "financialEventsWithUnknownFees": sum(x.get("feeJPY") is None for x in money),
+            "eventsWithoutSourceTimestamp": sum(not x.get("occurredAt") for x in all_real),
+            "testEventsExcluded": sum(x["test"] for x in data["events"])}
 
 
 @contextmanager
@@ -120,12 +170,16 @@ def main():
     for key in ("handle", "org", "reason", "post-url"):
         add.add_argument("--" + key, required=True)
     rec = commands.add_parser("record")
-    rec.add_argument("--handle", required=True)
+    rec.add_argument("--handle")
     rec.add_argument("--kind", choices=KINDS, required=True)
     rec.add_argument("--source-ref", required=True)
     rec.add_argument("--offer")
     rec.add_argument("--amount-jpy", type=int)
     rec.add_argument("--test", action="store_true")
+    rec.add_argument("--order-ref", help="Actual order/payment ID; no customer name needed")
+    rec.add_argument("--occurred-at", help="Actual source timestamp, ISO 8601 with timezone")
+    rec.add_argument("--attribution-ref", help="Evidence that this purchase came from Instagram; omit if unknown")
+    rec.add_argument("--fee-jpy", type=int, help="Verified fee only; omit if unknown")
     link = commands.add_parser("link")
     link.add_argument("--handle", required=True)
     link.add_argument("--offer", required=True)
@@ -133,7 +187,8 @@ def main():
     exclude = commands.add_parser("exclude")
     exclude.add_argument("--org", required=True)
     exclude.add_argument("--source-ref", required=True)
-    commands.add_parser("status")
+    status = commands.add_parser("status")
+    status.add_argument("--month", help="YYYY-MM, Japan time; omit for all recorded evidence")
     a = ap.parse_args()
     offers = json.loads((Path(__file__).resolve().parents[1] / "commerce.json").read_text())["offers"]
     if getattr(a, "offer", None) and a.offer not in offers:
@@ -143,7 +198,9 @@ def main():
             if a.cmd == "add":
                 result = add_lead(data, a.handle, a.org, a.reason, a.post_url)
             elif a.cmd == "record":
-                result = record(data, a.handle, a.kind, a.source_ref, a.offer, a.amount_jpy, a.test)
+                result = record(data, a.handle, a.kind, a.source_ref, a.offer, a.amount_jpy, a.test,
+                                order_ref=a.order_ref, occurred_at=a.occurred_at,
+                                attribution_ref=a.attribution_ref, fee_jpy=a.fee_jpy)
             elif a.cmd == "link":
                 lead = next((x for x in data["leads"] if x["handle"] == normalize(a.handle)), None)
                 if not lead:
@@ -163,7 +220,7 @@ def main():
                     data["exclusions"].append({"org": org, "sourceRef": a.source_ref})
                 result = {"excluded": org}
             else:
-                result = report(data)
+                result = report(data, a.month)
         print(json.dumps(result, ensure_ascii=False, indent=2))
     except (ValueError, OSError, subprocess.CalledProcessError) as exc:
         ap.exit(1, f"Error: {exc}\n")

@@ -2,6 +2,8 @@
 
 目的は再生数だけでなく、note の購入、KAILOOP の相談から本番の入金・利用開始まで進めること。既存の Instagram アカウント、GitHub Actions、販売先を使う。
 
+本人が投稿の改善から収益化、その後の売上拡大まで依頼したため、`brain/GROWTH.md` と非公開notesの `brain/sales/growth-plan.md`・`growth-state.json` も読む。初回購入を確認しても定期改善を止めない。
+
 ## 毎回の入口
 
 `enovloom/ig-media` と **非公開**の `enovloom/notes` の main を取得する。notes の `brain/reports/`、`brain/learnings.md`、`brain/experiments.md`、`brain/sales/` を読む。秘密・復号した数字・営業相手は ig-media にコミットしない。
@@ -75,7 +77,9 @@ python3 brain/tools/outreach.py --store /path/to/notes/brain/sales add --handle 
 python3 brain/tools/outreach.py --store /path/to/notes/brain/sales link --handle example --offer kailoop_consult
 python3 brain/tools/outreach.py --store /path/to/notes/brain/sales record --handle example --kind replied --source-ref 'instagram:conversation:実ID:実時刻'
 # 本番の証拠を確認できた時だけ。これは決済を行うコマンドではない。
-python3 brain/tools/outreach.py --store /path/to/notes/brain/sales record --handle example --kind paid --offer note_delegation --amount-jpy 1980 --source-ref 'note:purchase:実ID'
+python3 brain/tools/outreach.py --store /path/to/notes/brain/sales record --kind paid --offer note_delegation --amount-jpy 1980 --source-ref 'note:purchase:実証拠ID' --order-ref 'note:実注文ID' --occurred-at '2026-11-27T10:00:00+09:00'
+# 上の日付は書式例。必ず販売元の実支払日時に置き換える。流入元が不明ならInstagram経由と記録しない。
+python3 brain/tools/outreach.py --store /path/to/notes/brain/sales status --month 2026-11
 ```
 
 `paused:true` は**新しい台本制作を止める設定**で、予約済み投稿は止まらない。予約を止める場合は `auto/hold.json` へ対象IDを追加する。`autoApprove:false` だけにしても、既に `approved:true` の投稿は止まらない。
