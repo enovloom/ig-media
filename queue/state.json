@@ -971,5 +971,29 @@
     "attempts": 1,
     "permalink": "https://www.instagram.com/reel/DgRTxSzJUpk/",
     "status": "published"
+  },
+  "2026-11-28-1800_studio_cancel": {
+    "status": "published",
+    "postedAt": "2026-11-28T13:42:29.9575285+00:00",
+    "mediaId": "18078598427749597",
+    "containerId": "17880898347675689",
+    "attempts": 1,
+    "permalink": "https://www.instagram.com/reel/DgSYv3LRzFB/"
+  },
+  "2026-11-28-2100_studio_maenimo": {
+    "status": "published",
+    "postedAt": "2026-11-28T13:43:09.5376451+00:00",
+    "mediaId": "18000099786058180",
+    "containerId": "17880898386675689",
+    "attempts": 1,
+    "permalink": "https://www.instagram.com/reel/DgSY0qyhvZz/"
+  },
+  "2026-11-28-2200_studio_shintenchou": {
+    "status": "published",
+    "postedAt": "2026-11-28T13:43:49.4595532+00:00",
+    "mediaId": "17906128296369622",
+    "containerId": "17880898446675689",
+    "attempts": 1,
+    "permalink": "https://www.instagram.com/reel/DgSY5gDMgCQ/"
   }
 }
